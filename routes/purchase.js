@@ -1,7 +1,7 @@
 import { Router } from "express";
 // import User, { findByIdAndUpdate, findById, findByIdAndDelete } from '../models/User';
-import Customer from '../models/Customer.js';
 import findOrCreate from "../helpers/findOrCreate.js";
+import Purchase from "../models/Purchase.js";
 
 const customerRouter = Router()
 
@@ -9,16 +9,42 @@ const customerRouter = Router()
 // Ruta para crear un nuevo usuario
 customerRouter.post('/', async (req, res) => {
   try {
-    const { name, phone = "NA", date = new Date(), direction = "NA" } = req.body;
-    const { calle = "NA", numeroCasa = "NA", colonia = "NA", ciudad = "NA", entreCalles = "NA", referencia = "NA" } = direction
+    const { customerId, vendedor, cobrador, saleDate, creditPrice,
+      cashPrice, cashPriceEndDate, collectionDate,
+      collectionFrecuency, products = [], payments = [] } = req.body;
 
-    if (!name) return res.status(404).json({ error: true, msg: 'name not exist', status: "Not Created" });
+    if (!customerId) return res.status(404).json({ error: true, msg: 'customer not exist', status: "Not Created" });
+    if (products.length === 0 || !Array.isArray(products))
+      return res.status(404).json({ error: true, msg: 'product failed', status: "Not Created" });
+    if (!cashPrice || !creditPrice)
+      return res.status(404).json({ error: true, msg: 'Prices failed', status: "Not Created" });
 
-    const coloniaDb = await findOrCreate.coloniaData({ colonia })
-    const ciudadDb = await findOrCreate.ciudadData({ ciudad })
+    
+    // const PurchaseSchema = new Schema({
+    //   customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
+    //   vendedor: { type: Schema.Types.ObjectId, ref: 'Employee' },
+    //   cobrador: { type: Schema.Types.ObjectId, ref: 'Employee' },
+    //   saleDate: Date,
+    //   creditPrice: Number,
+    //   cashPrice: Number,
+    //   cashPriceEndDate: Date,
+    //   collectionDate: Date,
+    //   collectionFrequency:String,
+    //   products: [{ type: Schema.Types.ObjectId, ref: 'product' }],
+    //   payments: [{
+    //     paymentDate: Date,
+    //     amount: Number,
+    //     receiptId: String,
+    //   }],
+    // });
+
+
+
+    const coloniaDb = await findOrCreate.coloniaId({ colonia })
+    const ciudadDb = await findOrCreate.ciudadId({ ciudad })
 
     //if name, calle numeroCasa and colonia exist in db, client alredy exist
-    const existCustomer = await Customer.findOne({
+    const existCustomer = await Purchase.findOne({
       name,
       "direction.calle": calle,
       "direction.numeroCasa": numeroCasa,
@@ -59,8 +85,8 @@ customerRouter.put('/:id', async (req, res) => {
     const { name, phone, email, date, direction } = req.body;
     const { calle, numeroCasa, colonia, ciudad, entreCalles, referencia } = direction
 
-    const coloniaDb = await findOrCreate.coloniaData({ colonia })
-    const ciudadDb = await findOrCreate.ciudadData({ ciudad })
+    const coloniaDb = await findOrCreate.coloniaId({ colonia })
+    const ciudadDb = await findOrCreate.ciudadId({ ciudad })
 
     const DirectionUpdate = {
       calle,

@@ -1,15 +1,17 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-require('dotenv').config();
-
-
+import express from 'express';
+import { connect } from 'mongoose';
+// import { json } from 'body-parser';
+import pkg from 'body-parser';
+import { config as dotenvConfig } from 'dotenv';
+import routes from './routes/index.js';
+dotenvConfig();
+const { json } = pkg;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PORTMONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/conatumex'
 
-mongoose.connect( PORTMONGODB, {
+connect( PORTMONGODB, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
@@ -19,9 +21,9 @@ mongoose.connect( PORTMONGODB, {
 });
 
 
-app.use(bodyParser.json());
+app.use(json());
 
-const routes = require('./routes')
+
 app.use('/',routes)
 
 

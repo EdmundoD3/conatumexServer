@@ -1,22 +1,22 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const customerSchema = new mongoose.Schema({
+const customerSchema = new Schema({
   name: String,
   password: String,
   email:String,
   phone: String,
   date: Date,
-  direccion: {
+  direction: {
     calle: String,
     numeroCasa: String,
-    colonia: { type: mongoose.Schema.Types.ObjectId, ref: 'Colonia' },
-    ciudad: { type: mongoose.Schema.Types.ObjectId, ref: 'Ciudad' },
+    colonia: { type: Schema.Types.ObjectId, ref: 'Colonia' },
+    ciudad: { type: Schema.Types.ObjectId, ref: 'Ciudad' },
     entreCalles: String,
     referencia:String,
   },
-  purchase: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
+  purchase: [{ type: Schema.Types.ObjectId, ref: 'Purchase' }],
 });
 
-const Customer = mongoose.model('Customer', customerSchema);
+const Customer = model('Customer', customerSchema);
 
-module.exports = Customer;
+export default Customer;

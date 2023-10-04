@@ -1,9 +1,13 @@
-const router = require("express").Router()
+import { Router } from "express";
+// import authTokenRouter from "./authToken.js";
+import custonerRouter from './customer.js'
+// import purchaseRouter from './purchase.js'
 
-const cliente = require('./customer.js')
-const compra = require('./compra.js')
 
-router.use('/cliente', cliente)
-router.use('/compra', compra)
+const routes = Router()
 
-module.exports = router
+// router.use('/auth', authTokenRouter)
+routes.use('/customer', custonerRouter)
+// router.use('/purchase', purchaseRouter)
+
+export default routes

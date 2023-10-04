@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const ciudadSchema = new mongoose.Schema({
+const ciudadSchema = new Schema({
   ciudad: String,
 });
 
-const Ciudad = mongoose.model('Ciudad', ciudadSchema);
+const Ciudad = model('Ciudad', ciudadSchema);
 
-module.exports = Ciudad;
+export default Ciudad;

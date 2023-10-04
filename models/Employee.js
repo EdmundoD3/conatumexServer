@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const employeeSchema = new mongoose.Schema({
+const employeeSchema = new Schema({
   name: String,
   userName:String,
   phone:String,
@@ -10,6 +10,6 @@ const employeeSchema = new mongoose.Schema({
   isActive:Boolean,
 });
 
-const Employee = mongoose.model('Employee', employeeSchema);
+const Employee = model('Employee', employeeSchema);
 
-module.exports = Employee;
+export default Employee;

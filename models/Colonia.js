@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const coloniaSchema = new mongoose.Schema({
+const coloniaSchema = new Schema({
   colonia: String,
 });
 
-const Colonia = mongoose.model('Colonia', coloniaSchema);
+const Colonia = model('Colonia', coloniaSchema);
 
-module.exports = Colonia;
+export default Colonia;
