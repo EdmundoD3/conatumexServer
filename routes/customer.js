@@ -55,7 +55,7 @@ customerRouter.post('/', async (req, res) => {
 // Ruta para actualizar la información de un usuario
 customerRouter.put('/:id', async (req, res) => {
   try {
-    const userId = req.params.id;
+    const customerId = req.params.id;
     const { name, phone, email, date, direction } = req.body;
     const { calle, numeroCasa, colonia, ciudad, entreCalles, referencia } = direction
 
@@ -80,7 +80,7 @@ customerRouter.put('/:id', async (req, res) => {
 
     // Encuentra y actualiza el usuario por su ID
     const CustomerUpdated = await Customer.findByIdAndUpdate(
-      userId,
+      customerId,
       CustomerUpdate,
       { new: true }
     );

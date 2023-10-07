@@ -54,36 +54,29 @@ router.post('/', async (req, res) => {
 });
 
 // Ruta buscar un pago
-router.get('/:id', async (req, res) => {
-  const { id: purchaseId } = req.params
+router.get('/:purchaseId', async (req, res) => {
+  const { purchaseId } = req.params
   try {
 
     // First, find the existing purchase by its ID
-    Purchase.findById(purchaseId)
-      .then((existingPurchase) => {
-        if (!existingPurchase) {
-          // Maneja el caso en el que no se encuentra la compra
-          console.log('Compra no encontrada');
-          return;
-        }
-
-        return existingPurchase.payments;
-      })
-      .then((PurchasePayments) => {
-        if (PurchasePayments) {
-          console.log('Pago agregado con éxito a la compra:', PurchasePayments);
-          res.status(201).json(
-            {
-              error: null,
-              data: PurchasePayments
-            });
-        }
-      })
-      .catch((error) => {
-        console.error('Error al agregar el pago:', error);
+    const purchaseFinded = await Purchase.findById(purchaseId)
+    if (!purchaseFinded) {
+      // Maneja el caso en el que no se encuentra la compra
+      return res.status(404).json(
+        {
+          error: null,
+          msj: "Payments not found",
+          data: purchaseFinded
+        });
+    }
+    return res.status(201).json(
+      {
+        error: null,
+        data: purchaseFinded
       });
+
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    res.status(400).json({ error: 'error searching payments' });
   }
 });
 
@@ -96,7 +89,7 @@ router.get('/purchase/:id', async (req, res) => {
     const purchaseFinded = await Purchase.findById(id)
 
     if (!purchaseFinded) {
-      return res.status(201).json(
+      return res.status(404).json(
         {
           error: null,
           mensaje: 'Payment not found',
@@ -129,15 +122,15 @@ router.get('/purchase/:id', async (req, res) => {
 });
 
 // Ruta eliminar los pagos
-router.delete('/purchase/:id/:index', async (req, res) => {
-  const { id, index: paymentIndex } = req.params
+router.delete('/purchase/:id/:paymentIndex', async (req, res) => {
+  const { id, paymentIndex } = req.params
 
   try {
     // First, find the existing purchase by it's ID
     const purchaseFinded = await Purchase.findById(id)
 
     if (!purchaseFinded) {
-      return res.status(201).json(
+      return res.status(404).json(
         {
           error: null,
           mensaje: 'Payment not found',
@@ -145,7 +138,7 @@ router.delete('/purchase/:id/:index', async (req, res) => {
         });
     }
 
-    //  Verificar si el índice es válido
+    //  verify valid index
     if (paymentIndex <= 0 || paymentIndex > purchaseFinded.payments.length)
       return res.status(201).json(
         {
@@ -158,12 +151,12 @@ router.delete('/purchase/:id/:index', async (req, res) => {
     purchaseFinded.payments.splice(paymentIndex, 1);
 
     // Save the updated client
-    const savedPayment = purchaseFinded.save()
+    purchaseFinded.save()
 
     return res.status(201).json(
       {
         error: null,
-        mensaje: 'Payment created',
+        mensaje: 'Payment deleted',
         data: purchaseFinded.payments
       });
 
