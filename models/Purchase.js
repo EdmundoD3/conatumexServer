@@ -10,6 +10,10 @@ const PurchaseSchema = new Schema({
   cashPriceEndDate: Date,
   collectionDate: Date,
   collectionFrequency:String,
+  sentToCobrador: {
+    type: Boolean,
+    default: false,
+  },
   products: [{ type: Schema.Types.ObjectId, ref: 'product' }],
   payments: [{
     paymentDate: Date,

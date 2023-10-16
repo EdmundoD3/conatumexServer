@@ -1,31 +1,38 @@
 import { Router } from "express";
 import { jwtVerify, SignJWT } from "jose";
-import { USERS_BBDD } from "../bbdd.js";
-import validateLoginDTO from "../dto/validate_login_dto.js";
-import authByEmailPwd from "../helpers/auth-by-email-pwd.js";
+import validateLoginDTO from "../validate/validateLogin.js";
+import authByUserNamePassword from "../helpers/authByUserNamePassword.js";
+import Employee from "../models/Employee.js";
 
 const authTokenRouter = Router();
 
 //Login con email y password
 authTokenRouter.post("/login", validateLoginDTO, async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const { guid } = authByEmailPwd(email, password);
+
+    const employe = authByUserNamePassword(username, password);
 
     //GENERAR TOKEN Y DEVOLVER TOKEN
-    const jwtConstructor = new SignJWT({ guid });
+    const jwtConstructor = new SignJWT({ _id: employe._id, username: employe.username, roles: employe.roles });
 
     const encoder = new TextEncoder();
     const jwt = await jwtConstructor
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setIssuedAt()
-      .setExpirationTime("1h")
+      .setExpirationTime("30m")
       .sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
 
-    return res.send({ jwt });
-  } catch (err) {
-    return res.sendStatus(401);
+    const refreshToken = await jwtConstructor
+      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+      .setIssuedAt()
+      .setExpirationTime("7d")
+      .sign(encoder.encode(process.env.JWT_PRIVATE_KEY));
+
+    return res.send({ jwt, refreshToken });
+  } catch (error) {
+    return res.sendStatus(401).send({ error: true, msj: error });
   }
 });
 
@@ -42,16 +49,18 @@ authTokenRouter.get("/profile", async (req, res) => {
       encoder.encode(process.env.JWT_PRIVATE_KEY)
     );
 
-    const user = USERS_BBDD.find((user) => user.guid === payload.guid);
+    const employee = await Employee.findById(payload._id);
 
-    if (!user) return res.sendStatus(401);
+    if (!employee) return res.sendStatus(401);
 
-    delete user.password;
+    delete employee.password;
 
-    return res.send(user);
+    return res.send({data:employee});
   } catch (err) {
     return res.sendStatus(401);
   }
 });
+
+
 
 export default authTokenRouter;

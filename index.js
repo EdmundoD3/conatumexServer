@@ -4,6 +4,13 @@ import { connect } from 'mongoose';
 import pkg from 'body-parser';
 import { config as dotenvConfig } from 'dotenv';
 import routes from './routes/index.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Obten la ruta del directorio actual
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 dotenvConfig();
 const { json } = pkg;
 
@@ -26,6 +33,12 @@ app.use(json());
 
 app.use('/',routes)
 
+
+
+app.get('/doc', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+  
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor en funcionamiento en el puerto ${PORT}`);

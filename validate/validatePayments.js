@@ -5,14 +5,24 @@ import addErrors from "ajv-errors";
 
 const LoginDTOSchema = Type.Object(
   {
-    username: Type.String({
+    purchaseId: Type.String({
       errorMessage: {
-        type: "username isn't string",
+        type: "purchaseId isn't string",
       },
     }),
-    password: Type.String({
+    paymentDate: Type.Date({
       errorMessage: {
-        type: "password isn't sting",
+        type: "paymentDate isn't Date",
+      },
+    }),
+    amount:Type.Number({
+      errorMessage: {
+        type: "amount isn't Number",
+      },
+    }),
+    receiptId:Type.String({
+      errorMessage: {
+        type: "recipeId isn't sting",
       },
     }),
   },
@@ -29,7 +39,7 @@ const ajv = new Ajv({ allErrors: true });
 addErrors(ajv, { keepErrors: false });
 const validate = ajv.compile(LoginDTOSchema);
 
-const validateLoginDTO = (req, res, next) => {
+const validatePayment = (req, res, next) => {
   const isDTOValid = validate(req.body);
 
   if (!isDTOValid)
@@ -39,4 +49,4 @@ const validateLoginDTO = (req, res, next) => {
   next();
 };
 
-export default validateLoginDTO;
+export default validatePayment;

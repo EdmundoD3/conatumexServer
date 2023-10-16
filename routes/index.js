@@ -1,13 +1,14 @@
 import { Router } from "express";
-// import authTokenRouter from "./authToken.js";
+import authTokenRouter from "./authToken.js";
 import custonerRouter from './customer.js'
-// import purchaseRouter from './purchase.js'
-
+import purchaseRouter from './purchase.js'
+import register from './register.js'
 
 const routes = Router()
 
-// router.use('/auth', authTokenRouter)
+routes.use('/auth', authTokenRouter)
 routes.use('/customer', custonerRouter)
-// router.use('/purchase', purchaseRouter)
+routes.use('/purchase', purchaseRouter)
+routes.use('/sign_up', register)
 
 export default routes

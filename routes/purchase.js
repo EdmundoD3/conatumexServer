@@ -6,7 +6,98 @@ import findOrCreate from "../helpers/findOrCreate.js";
 
 const purchaseRouter = Router()
 
-
+/**
+ * @openapi
+ * /api/purchases:
+ *   post:
+ *     summary: Create a new purchase
+ *     description: Create a new purchase with customer information, products, and payments.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerId:
+ *                 type: string
+ *                 description: The ID of the customer for the purchase.
+ *               vendedor:
+ *                 type: string
+ *                 description: The name of the seller.
+ *               cobrador:
+ *                 type: string
+ *                 description: The name of the collector.
+ *               saleDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The date of the sale in ISO 8601 format.
+ *               creditPrice:
+ *                 type: number
+ *                 description: The price for credit.
+ *               cashPrice:
+ *                 type: number
+ *                 description: The cash price.
+ *               cashPriceEndDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The end date for the cash price in ISO 8601 format.
+ *               collectionDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The date for collection in ISO 8601 format.
+ *               collectionFrequency:
+ *                 type: string
+ *                 description: The frequency of collection.
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: An array of product IDs.
+ *               payments:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     paymentDate:
+ *                       type: string
+ *                       format: date
+ *                       description: The date of the payment in ISO 8601 format.
+ *                     amount:
+ *                       type: number
+ *                       description: The payment amount.
+ *                     receiptId:
+ *                       type: string
+ *                       description: The receipt ID (optional).
+ *     responses:
+ *       '201':
+ *         description: Purchase created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: null
+ *                 msj:
+ *                   type: string
+ *                   description: Success message.
+ *                 data:
+ *                   type: object
+ *                   description: Details of the created purchase.
+ *       '400':
+ *         description: Error creating the purchase.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: true
+ *                 msj:
+ *                   type: string
+ *                   description: Error message.
+ */
 purchaseRouter.post('/', async (req, res) => {
   try {
     const { customerId, vendedor, cobrador, saleDate, creditPrice,
@@ -45,6 +136,7 @@ purchaseRouter.post('/', async (req, res) => {
       cashPriceEndDate,
       collectionDate,
       collectionFrequency,
+      sentToCobrador:false,
       products: productsArrayId,
       payments: paymetsVerify,
     })
@@ -101,6 +193,7 @@ purchaseRouter.put('/:id', async (req, res) => {
       cashPriceEndDate,
       collectionDate,
       collectionFrequency,
+      sentToCobrador:false,
       products: productsArrayId,
       payments: paymetsVerify,
     }

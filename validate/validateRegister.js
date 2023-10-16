@@ -1,18 +1,46 @@
 import { Type } from "@sinclair/typebox";
 import Ajv from "ajv";
 import addErrors from "ajv-errors";
+import addFormats from "ajv-formats";
 // import addFormats from "ajv-formats";
+
 
 const LoginDTOSchema = Type.Object(
   {
-    username: Type.String({
+    name: Type.String({
+      errorMessage: {
+        type: "name isn't string",
+      },
+    }),
+    userName: Type.String({
       errorMessage: {
         type: "username isn't string",
       },
     }),
+    phone: Type.Optional(Type.String({
+      errorMessage: {
+        type: "phone isn't string",
+      },
+    })),
+    email: Type.Optional(Type.String({
+      format: "email",
+      errorMessage: {
+        type: "email isn't string",
+      },
+    })),
     password: Type.String({
       errorMessage: {
         type: "password isn't sting",
+      },
+    }),
+    roles:Type.Array(Type.String({
+      errorMessage: {
+        type: "roles isn't string",
+      },
+    })),
+    isActive:Type.Boolean({
+      errorMessage: {
+        type: "is active isn't string",
       },
     }),
   },
@@ -26,10 +54,11 @@ const LoginDTOSchema = Type.Object(
 
 const ajv = new Ajv({ allErrors: true });
 
+addFormats(ajv, ["email"]);
 addErrors(ajv, { keepErrors: false });
 const validate = ajv.compile(LoginDTOSchema);
 
-const validateLoginDTO = (req, res, next) => {
+const validateRegister = (req, res, next) => {
   const isDTOValid = validate(req.body);
 
   if (!isDTOValid)
@@ -39,4 +68,4 @@ const validateLoginDTO = (req, res, next) => {
   next();
 };
 
-export default validateLoginDTO;
+export default validateRegister;
