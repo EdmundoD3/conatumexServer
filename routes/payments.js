@@ -1,10 +1,8 @@
 import { Router } from 'express';
-import Purchase from '../models/Purchase';
-import validatePayment from '../validate/validatePayments';
-
+import Purchase from '../models/Purchase.js';
+import validatePayment from '../validate/validatePayments.js';
 
 const router = Router()
-
 
 /**
  * @openapi
@@ -110,7 +108,7 @@ router.post('/', validatePayment, async (req, res) => {
 // Route search for a purchase id
 /**
  * @openapi
- * /api/purchases/{purchaseId}:
+ * /api/payments/{purchaseId}:
  *   get:
  *     summary: Search for a purchase by ID
  *     description: Retrieve purchase details by providing its unique ID.
@@ -191,7 +189,7 @@ router.get('/:purchaseId', async (req, res) => {
 
 /**
  * @openapi
- * /api/purchases/{purchaseId}:
+ * /api/payments/{purchaseId}:
  *   put:
  *     summary: Update or create a payment for a purchase
  *     description: Update an existing payment or create a new one for a specific purchase.
@@ -299,7 +297,7 @@ router.put('/:purchaseId', async (req, res) => {
 
 /**
  * @openapi
- * /api/purchases/{purchaseId}/{paymentIndex}:
+ * /api/payments/{purchaseId}/{paymentIndex}:
  *   delete:
  *     summary: Delete a payment from a purchase
  *     description: Delete a payment from a specific purchase by providing its purchase ID and the index of the payment.
@@ -347,7 +345,7 @@ router.put('/:purchaseId', async (req, res) => {
  *                 data:
  *                   type: array
  *                   description: List of payments associated with the purchase.
- *       '201':
+ *       '401':
  *         description: Index not found.
  *         content:
  *           application/json:
@@ -391,7 +389,7 @@ router.delete('/:purchaseId/:paymentIndex', async (req, res) => {
 
     //  verify valid index
     if (paymentIndex <= 0 || paymentIndex > purchaseFinded.payments.length)
-      return res.status(201).json(
+      return res.status(401).json(
         {
           error: null,
           msj: 'index not found',

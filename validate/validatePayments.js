@@ -10,17 +10,13 @@ const LoginDTOSchema = Type.Object(
         type: "purchaseId isn't string",
       },
     }),
-    paymentDate: Type.Date({
-      errorMessage: {
-        type: "paymentDate isn't Date",
-      },
-    }),
-    amount:Type.Number({
+    paymentDate: Type.String(),
+    amount: Type.Number({
       errorMessage: {
         type: "amount isn't Number",
       },
     }),
-    receiptId:Type.String({
+    receiptId: Type.String({
       errorMessage: {
         type: "recipeId isn't sting",
       },
@@ -44,7 +40,7 @@ const validatePayment = (req, res, next) => {
 
   if (!isDTOValid)
     return res.status(400)
-      .send({error: true, ...ajv.errorsText(validate.errors, { separator: "\n" })});
+      .send({ error: true, ...ajv.errorsText(validate.errors, { separator: "\n" }) });
 
   next();
 };

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 
 
 const authByUserNamePassword = async ({username, password}) => {
+
   const employee = await Employee.findOne({username});
   if (!employee) throw new Error("employee not found");
 

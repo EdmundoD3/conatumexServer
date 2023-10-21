@@ -12,7 +12,7 @@ const LoginDTOSchema = Type.Object(
         type: "name isn't string",
       },
     }),
-    userName: Type.String({
+    username: Type.String({
       errorMessage: {
         type: "username isn't string",
       },
@@ -38,11 +38,11 @@ const LoginDTOSchema = Type.Object(
         type: "roles isn't string",
       },
     })),
-    isActive:Type.Boolean({
+    isActive: Type.Optional(Type.Boolean({
       errorMessage: {
         type: "is active isn't string",
       },
-    }),
+    })),
   },
   {
     additionalProperties: false,
@@ -63,7 +63,7 @@ const validateRegister = (req, res, next) => {
 
   if (!isDTOValid)
     return res.status(400)
-      .send({error: true, ...ajv.errorsText(validate.errors, { separator: "\n" })});
+      .send({error: true, msj:ajv.errorsText(validate.errors, { separator: "\n" })});
 
   next();
 };

@@ -3,11 +3,13 @@ import { connect } from 'mongoose';
 // import { json } from 'body-parser';
 import pkg from 'body-parser';
 import { config as dotenvConfig } from 'dotenv';
-import routes from './routes/index.js';
+import router from './routes/index.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// Obten la ruta del directorio actual
+
+
+// Get current directory path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -31,7 +33,7 @@ connect( PORTMONGODB, {
 app.use(json());
 
 
-app.use('/',routes)
+app.use('/api/',router)
 
 
 
@@ -40,6 +42,11 @@ app.get('/doc', (req, res) => {
   
 });
 
+// documentation with swagger
+
+import swagger from './swagger.js'
+app.use('/',swagger)
+
 app.listen(PORT, () => {
-  console.log(`Servidor en funcionamiento en el puerto ${PORT}`);
+  console.log(`Servidor en el puerto ${PORT}`);
 });

@@ -44,7 +44,9 @@ customerRouter.post('/', async (req, res) => {
     })
 
     const savedCustomer = await newCustomer.save();
+
     delete savedCustomer.password
+    
     res.status(201).json({ error: null, msj: 'Customer successfully saved', data: savedCustomer });
   } catch (error) {
     res.status(500).json({ error: true, msj: 'Error creating customer' });

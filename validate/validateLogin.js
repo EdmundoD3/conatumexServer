@@ -34,7 +34,7 @@ const validateLoginDTO = (req, res, next) => {
 
   if (!isDTOValid)
     return res.status(400)
-      .send({error: true, ...ajv.errorsText(validate.errors, { separator: "\n" })});
+      .send({error: true, msj:ajv.errorsText(validate.errors, { separator: "\n" })});
 
   next();
 };
