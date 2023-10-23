@@ -12,6 +12,8 @@ const purchaseRouter = Router()
  *   post:
  *     summary: Create a new purchase
  *     description: Create a new purchase with customer information, products, and payments.
+ *     tags:
+ *       - purchases
  *     requestBody:
  *       required: true
  *       content:
@@ -125,7 +127,6 @@ purchaseRouter.post('/', async (req, res) => {
       return { paymentDate: NewPaymetDate, amount, receiptId: newReceiptId }
     })
 
-
     const newPurchase = new Purchase({
       customer: customerId,
       vendedor: vendedorFinded._id,
@@ -140,20 +141,15 @@ purchaseRouter.post('/', async (req, res) => {
       products: productsArrayId,
       payments: paymetsVerify,
     })
-
-
-
-    //if name, calle numeroCasa and colonia exist in db, client alredy exist
     const savedPurchase = newPurchase.save()
 
     res.status(201).json({ error: null, msj: 'Purchase successfully saved', data: savedPurchase });
   } catch (error) {
-    res.status(500).json({ error: true, msj: 'Error creating purchase' });
+    res.status(400).json({ error: true, msj: 'Error creating purchase' });
   }
 });
 
 
-// Ruta para actualizar la información de un customer
 purchaseRouter.put('/:id', async (req, res) => {
   try {
     const customerId = req.params.id;
@@ -217,7 +213,7 @@ purchaseRouter.get('/:id', async (req, res) => {
     }
     return res.status(201).json({ error: null, msj: 'Purchase successfully Updated', data: purchase });
   } catch (error) {
-    res.status(500).json({ error: true, msj: 'Error getting purchase' });
+    res.status(400).json({ error: true, msj: 'Error getting purchase' });
   }
 });
 

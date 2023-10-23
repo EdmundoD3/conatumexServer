@@ -10,6 +10,8 @@ const router = Router()
  *   post:
  *     summary: Create a new payment
  *     description: Create a new payment for an existing purchase.
+ *     tags:
+ *       - Payments
  *     requestBody:
  *       required: true
  *       content:
@@ -112,6 +114,8 @@ router.post('/', validatePayment, async (req, res) => {
  *   get:
  *     summary: Search for a purchase by ID
  *     description: Retrieve purchase details by providing its unique ID.
+ *     tags:
+ *       - Payments
  *     parameters:
  *       - in: path
  *         name: purchaseId
@@ -193,6 +197,8 @@ router.get('/:purchaseId', async (req, res) => {
  *   put:
  *     summary: Update or create a payment for a purchase
  *     description: Update an existing payment or create a new one for a specific purchase.
+ *     tags:
+ *       - Payments
  *     parameters:
  *       - in: path
  *         name: purchaseId
@@ -301,6 +307,8 @@ router.put('/:purchaseId', async (req, res) => {
  *   delete:
  *     summary: Delete a payment from a purchase
  *     description: Delete a payment from a specific purchase by providing its purchase ID and the index of the payment.
+ *     tags:
+ *       - Payments
  *     parameters:
  *       - in: path
  *         name: purchaseId

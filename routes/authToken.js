@@ -15,6 +15,8 @@ const authTokenRouter = Router();
  *   post:
  *     summary: User login
  *     description: Authenticate a user and issue JWT and refresh token upon successful login.
+ *     tags:
+ *       - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -92,6 +94,8 @@ authTokenRouter.post("/login", validateLoginDTO, async (req, res) => {
  *   get:
  *     summary: Get user profile information
  *     description: Retrieve user profile information using a valid JWT token.
+ *     tags:
+ *       - Auth
  *     security:
  *       - BearerAuth: []
  *     responses:

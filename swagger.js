@@ -11,12 +11,13 @@ const options = {
       description: 'Esta api se encarga de la información de la base de datos de la empresa Conatumex',
     },
   },
-  apis: ['routes/authToken.js',
-  'routes/customer.js', 
-  'routes/payments.js',
-  'routes/purchase.js',
-  'routes/register.js'
-],
+  apis: [
+    'routes/authToken.js',
+    'routes/customer.js',
+    'routes/payments.js',
+    'routes/purchase.js',
+    'routes/register.js'
+  ],
 };
 const specs = swaggerJsdoc(options);
 router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

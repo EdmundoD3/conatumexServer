@@ -2,11 +2,101 @@ import { Router } from "express";
 // import User, { findByIdAndUpdate, findById, findByIdAndDelete } from '../models/User';
 import Customer from '../models/Customer.js';
 import findOrCreate from "../helpers/findOrCreate.js";
+import verifyToken from "../validate/validateToken.js";
 
 const customerRouter = Router()
 
+customerRouter.use(verifyToken)
 
-// Ruta para crear un nuevo usuario
+/**
+ * @openapi
+ * /api/customers:
+ *   post:
+ *     summary: Create a new customer
+ *     description: Create a new customer with name and contact details.
+ *     security:
+ *       - BearerAuth: []
+ *     tags:
+ *       - Customers
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the customer.
+ *               phone:
+ *                 type: string
+ *                 description: The phone number of the customer (optional).
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: The date of the customer's information (optional).
+ *               direction:
+ *                 type: object
+ *                 properties:
+ *                   calle:
+ *                     type: string
+ *                     description: The street name (optional).
+ *                   numeroCasa:
+ *                     type: string
+ *                     description: The house number (optional).
+ *                   colonia:
+ *                     type: string
+ *                     description: The neighborhood name (optional).
+ *                   ciudad:
+ *                     type: string
+ *                     description: The city name (optional).
+ *                   entreCalles:
+ *                     type: string
+ *                     description: The cross streets (optional).
+ *                   referencia:
+ *                     type: string
+ *                     description: A reference point (optional).
+ *     responses:
+ *       '201':
+ *         description: Customer created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: null
+ *                 msj:
+ *                   type: string
+ *                   description: Success message.
+ *                 data:
+ *                   $ref: '#/components/schemas/Customer'
+ *       '404':
+ *         description: Bad request - Invalid input data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: true
+ *                 msj:
+ *                   type: string
+ *                   description: Error message.
+ *       '400':
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: true
+ *                 msj:
+ *                   type: string
+ *                   description: Error message.
+ */
+
 customerRouter.post('/', async (req, res) => {
   try {
     const { name, phone = "NA", date = new Date(), direction = "NA" } = req.body;
@@ -25,7 +115,7 @@ customerRouter.post('/', async (req, res) => {
       "direction.colonia": coloniaDb._id
     })
 
-    if (existCustomer) return res.status(400).json({ error: true, msg: 'Customer exist', status: "Not Modified" });
+    if (existCustomer) return res.status(404).json({ error: true, msg: 'Customer exist', status: "Not Modified" });
 
     const newDirection = {
       calle,
@@ -49,7 +139,7 @@ customerRouter.post('/', async (req, res) => {
     
     res.status(201).json({ error: null, msj: 'Customer successfully saved', data: savedCustomer });
   } catch (error) {
-    res.status(500).json({ error: true, msj: 'Error creating customer' });
+    res.status(400).json({ error: true, msj: 'Error creating customer' });
   }
 });
 
