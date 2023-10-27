@@ -27,34 +27,43 @@ customerRouter.use(verifyToken)
  *             properties:
  *               name:
  *                 type: string
+ *                 default: "nombre de prueba"
  *                 description: The name of the customer.
  *               phone:
  *                 type: string
+ *                 default: "8182838485"
  *                 description: The phone number of the customer (optional).
  *               date:
  *                 type: string
  *                 format: date
+ *                 default: "2023-08-31"
  *                 description: The date of the customer's information (optional).
  *               direction:
  *                 type: object
  *                 properties:
  *                   calle:
  *                     type: string
+ *                     default: "calle de prueba"
  *                     description: The street name (optional).
  *                   numeroCasa:
  *                     type: string
+ *                     default: "222"
  *                     description: The house number (optional).
  *                   colonia:
  *                     type: string
+ *                     default: "México lindo"
  *                     description: The neighborhood name (optional).
  *                   ciudad:
  *                     type: string
+ *                     default: "Monterrey"
  *                     description: The city name (optional).
  *                   entreCalles:
  *                     type: string
+ *                     default: "Richard Phillips Feynman y Albert W. Wily"
  *                     description: The cross streets (optional).
  *                   referencia:
  *                     type: string
+ *                     default: "Porton blanco esquina"
  *                     description: A reference point (optional).
  *     responses:
  *       '201':
@@ -70,7 +79,7 @@ customerRouter.use(verifyToken)
  *                   type: string
  *                   description: Success message.
  *                 data:
- *                   $ref: '#/components/schemas/Customer'
+ *                   $ref: '#/src/models/Customer.js'
  *       '404':
  *         description: Bad request - Invalid input data.
  *         content:
@@ -144,7 +153,6 @@ customerRouter.post('/', async (req, res) => {
 });
 
 
-// Ruta para actualizar la información de un usuario
 customerRouter.put('/:id', async (req, res) => {
   try {
     const customerId = req.params.id;
@@ -170,7 +178,6 @@ customerRouter.put('/:id', async (req, res) => {
       direction: DirectionUpdate,
     }
 
-    // Encuentra y actualiza el usuario por su ID
     const CustomerUpdated = await Customer.findByIdAndUpdate(
       customerId,
       CustomerUpdate,
@@ -190,7 +197,6 @@ customerRouter.put('/:id', async (req, res) => {
 customerRouter.get('/:id', async (req, res) => {
   try {
     const CustomerId = req.params.id;
-    // Encuentra el usuario por su ID
     const customer = await Customer.findById(CustomerId);
 
     if (!customer) {

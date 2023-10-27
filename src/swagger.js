@@ -12,11 +12,18 @@ const options = {
     },
   },
   apis: [
-    'routes/authToken.js',
-    'routes/customer.js',
-    'routes/payments.js',
-    'routes/purchase.js',
-    'routes/register.js'
+    'src/routes/authToken.js',
+    'src/routes/customer.js',
+    'src/routes/payments.js',
+    'src/routes/purchase.js',
+    'src/routes/register.js',
+    'src/models/Ciudad.js',
+    'src/models/Cobrador.js',    
+    'src/models/Colonia.js',    
+    'src/models/Customer.js',    
+    'src/models/Employee.js',
+    'src/models/Products.js',
+    'src/models/Purchase.js',
   ],
 };
 const specs = swaggerJsdoc(options);
