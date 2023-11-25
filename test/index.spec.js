@@ -1,58 +1,65 @@
 import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 
-describe("GET /tasks", () => {
-  test("should respond with a 200 status code", async () => {
-    const response = await request(app).get("/tasks").send();
+let employeAuth
+const employeeTest = { name:"vanessa", 
+    username:"vane200",
+    password:"unpassword",
+    phone:"812345678", 
+    email:"vanessaprueba@gmail.com", roles:["prueba"], isActive:true 
+  }
+
+describe("/api/sign_up", () => {
+
+  test("should respond with a 400 status code, without password", async () => {
+    const employee = {...employeeTest}
+    delete employee.password
+    const response = await request(app).post("/api/sign_up").send(employee);
+    expect(response.statusCode).toBe(400);
+    const expectedResponse = `{"error":true,"msj":"data must have required property 'password'"}`
+    expect(response.res.text).toBe(expectedResponse)
+    // expect(response).toBe(400);
+  });
+
+  test("should respond with a 400 status code, without username", async () => {
+    const employee = {...employeeTest}
+    delete employee.username
+    const response = await request(app).post("/api/sign_up").send(employeeTest);
+    expect(response.statusCode).toBe(400);
+    const expectedResponse = `{"error":true,"msj":"data must have required property 'username'"}`
+    expect(response.res.text).toBe(expectedResponse)
+  });
+
+  test("should respond with a 200 status code, creating new user", async () => {
+    const response = await request(app).post("/api/sign_up").send(employeeTest);
     expect(response.statusCode).toBe(200);
   });
 
-  test("should respond an array", async () => {
-    const response = await request(app).get("/tasks").send();
-    expect(response.body).toBeInstanceOf(Array);
+  test("should respond with a 401 status code, creating the same user", async () => {
+    const response = await request(app).post("/api/sign_up").send(employeeTest);
+    expect(response.statusCode).toBe(401);
   });
 });
 
-describe("POST /tasks", () => {
-  describe("given a title and description", () => {
-    const newTask = {
-      title: "some title",
-      description: "some description",
-    };
 
-    // should respond with a 200 code
-    test("should respond with a 200 status code", async () => {
-      const response = await request(app).post("/tasks").send(newTask);
-      expect(response.statusCode).toBe(200);
-    });
-
-    // should respond a json as a content type
-    test("should have a Content-Type: application/json header", async () => {
-      const response = await request(app).post("/tasks").send(newTask);
-      expect(response.headers["content-type"]).toEqual(
-        expect.stringContaining("json")
-      );
-    });
-
-    // shoud respond with a json object containing the new task with an id
-    test("should respond with an task ID", async () => {
-      const response = await request(app).post("/tasks").send(newTask);
-      expect(response.body.id).toBeDefined();
-    });
+describe("/api/auth/login", () => {
+  test("should respond with a 200 status code, Log in ", async () => {
+    const employee = { 
+    username: employeeTest.username,
+    password: employeeTest.password
+  }
+    const response = await request(app).post("/api/auth/login").send(employee);
+    expect(response.statusCode).toBe(200);
+    employeAuth = JSON.parse(response.res.text)
   });
 
-  describe("when the title and description is missing", () => {
-    // should respond with a 400 code
-    test("shoud respond with a 400 status code", async () => {
-      const fields = [
-        { title: "some title" },
-        { description: "some description" },
-      ];
-
-      for (const body of fields) {
-        const response = await request(app).post("/tasks").send(body);
-        expect(response.statusCode).toBe(400);
-      }
-    });
-  });
 });
+
+describe("/api/sign_up delete test employe", () => {
+  test("should respond with a 200 status code, deleting test user", async () => {
+    const response = await request(app).delete("/api/sign_up/test").send();
+    expect(response.statusCode).toBe(200);
+  });
+
+});
+

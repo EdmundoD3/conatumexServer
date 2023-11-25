@@ -15,6 +15,10 @@ const customerSchema = new Schema({
     referencia:String,
   },
   purchase: [{ type: Schema.Types.ObjectId, ref: 'Purchase' }],
+  updatedAt: {
+    type: Date,
+    default: new Date()
+  },
 });
 
 const Customer = model('Customer', customerSchema);

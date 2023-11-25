@@ -1,8 +1,8 @@
 import { Router } from "express";
 // import User, { findByIdAndUpdate, findById, findByIdAndDelete } from '../models/User';
-import Purchase from "../models/Purchase.js";
-import Employee from "../models/Employee.js";
-import findOrCreate from "../helpers/findOrCreate.js";
+import Purchase from "../../models/Purchase.js";
+import User from "../../models/User.js";
+import findOrCreate from "../../helpers/findOrCreate.js";
 
 const purchaseRouter = Router()
 
@@ -112,14 +112,16 @@ purchaseRouter.post('/', async (req, res) => {
     if (!cashPrice || !creditPrice)
       return res.status(404).json({ error: true, msg: 'Prices failed', status: "Not Created" });
 
-    const vendedorFinded = await Employee.findOne({ name: vendedor })
+    const vendedorFinded = await User.findOne({ name: vendedor })
     if (!vendedorFinded) return res.status(404).json({ error: true, msg: 'vendedor failed', status: "Not Created" });
-    const cobradorFinded = await Employee.findOne({ name: cobrador })
+    const cobradorFinded = await User.findOne({ name: cobrador })
     if (!cobradorFinded) return res.status(404).json({ error: true, msg: 'cobrador failed', status: "Not Created" });
     ["plus", "mascarilla"]
+
     const productsArrayId = await Promise.all(products.map(async product =>
       await findOrCreate.productData({ product })._id
     ))
+
     const paymetsVerify = payments.map(({ paymentDate, amount, receiptId }) => {
       const NewPaymetDate = paymentDate instanceof Date ? paymentDate : new Date();
       if (typeof amount === "number") throw Error({ message: "amount is not a number" });
@@ -163,9 +165,9 @@ purchaseRouter.put('/:id', async (req, res) => {
     if (!cashPrice || !creditPrice)
       return res.status(404).json({ error: true, msg: 'Prices failed', status: "Not Created" });
 
-    const vendedorFinded = await Employee.findOne({ name: vendedor })
+    const vendedorFinded = await User.findOne({ name: vendedor })
     if (!vendedorFinded) return res.status(404).json({ error: true, msg: 'vendedor failed', status: "Not Created" });
-    const cobradorFinded = await Employee.findOne({ name: cobrador })
+    const cobradorFinded = await User.findOne({ name: cobrador })
     if (!cobradorFinded) return res.status(404).json({ error: true, msg: 'cobrador failed', status: "Not Created" });
     ["plus", "mascarilla"]
     const productsArrayId = await Promise.all(products.map(async product =>

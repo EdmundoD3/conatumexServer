@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import Purchase from '../models/Purchase.js';
-import validatePayment from '../validate/validatePayments.js';
+import Purchase from '../../models/Purchase.js';
+import validatePayment from './helpers/validatePayments.js';
 
 const router = Router()
 

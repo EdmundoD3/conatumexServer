@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { jwtVerify, SignJWT } from "jose";
-import validateLoginDTO from "../validate/validateLogin.js";
-import authByUserNamePassword from "../helpers/authByUserNamePassword.js";
-import Employee from "../models/Employee.js";
-import { removeEmployeePassword } from "../helpers/removePassword.js";
+import validateLoginDTO from "./middleware/validateLogin.js";
+import authByUserNamePassword from "./helpers/authByUserNamePassword.js";
+import User from "../../models/User.js";
+import { removeEmployeePassword } from "../../helpers/removePassword.js";
 
 const authTokenRouter = Router();
 
@@ -63,9 +63,9 @@ authTokenRouter.post("/login", validateLoginDTO, async (req, res) => {
 
   try {
 
-    const employe = await authByUserNamePassword({username, password});
+    const user = await authByUserNamePassword({username, password});
 
-    const jwtConstructor = new SignJWT({ _id: employe._id, username: employe.username, roles: employe.roles });
+    const jwtConstructor = new SignJWT({ _id: user._id, username: user.username });
 
     const encoder = new TextEncoder();
     const jwt = await jwtConstructor
@@ -139,7 +139,7 @@ authTokenRouter.get("/profile", async (req, res) => {
       encoder.encode(process.env.JWT_PRIVATE_KEY)
     );
 
-    const employee = await Employee.findById(payload._id);
+    const employee = await User.findById(payload._id);
 
     if (!employee) return res.status(400).send({error:true, msj:"the employee does not exist"});;
 

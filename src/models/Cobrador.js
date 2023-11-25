@@ -7,9 +7,9 @@ import { Schema, model } from 'mongoose';
  *     Cobranza:
  *       type: object
  *       properties:
- *         employee:
+ *         user:
  *           type: string
- *           description: The employee associated with the collection.
+ *           description: The user associated with the collection.
  *         lastCuttingDate:
  *           type: string
  *           format: date
@@ -22,10 +22,13 @@ import { Schema, model } from 'mongoose';
  *           description: The cash amount delivered.
  */
 const CobranzaSchema = new Schema({
-  employee: { type: Schema.Types.ObjectId, ref: 'Employee' },
-  lastCuttingDate: Date,
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
   cash: Number,
   cashDelivered: Number,
+  updatedAt: {
+    type: Date,
+    default: new Date()
+  },
 });
 
 const Cobranza = model('Cobranza', CobranzaSchema);

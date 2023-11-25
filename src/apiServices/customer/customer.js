@@ -1,8 +1,8 @@
 import { Router } from "express";
 // import User, { findByIdAndUpdate, findById, findByIdAndDelete } from '../models/User';
-import Customer from '../models/Customer.js';
-import findOrCreate from "../helpers/findOrCreate.js";
-import verifyToken from "../validate/validateToken.js";
+import Customer from '../../models/Customer.js';
+import findOrCreate from "../../helpers/findOrCreate.js";
+import verifyToken from "../../middlewere/validateToken.js";
 
 const customerRouter = Router()
 
@@ -108,13 +108,17 @@ customerRouter.use(verifyToken)
 
 customerRouter.post('/', async (req, res) => {
   try {
+    const user = req.user
+    if (!user.roles.includes("admin") || !user.roles.includes("secretary"))
+      return res.status(403).json({ error: true, msj: 'Access denied' });
+
     const { name, phone = "NA", date = new Date(), direction = "NA" } = req.body;
-    const { calle = "NA", numeroCasa = "NA", colonia = "NA", ciudad = "NA", entreCalles = "NA", referencia = "NA" } = direction
+    const { calle = "NA", numeroCasa = "NA", colonia, ciudad, entreCalles = "NA", referencia = "NA" } = direction
 
     if (!name) return res.status(404).json({ error: true, msg: 'name not exist', status: "Not Created" });
 
-    const coloniaDb = await findOrCreate.coloniaData({ colonia })
-    const ciudadDb = await findOrCreate.ciudadData({ ciudad })
+    const coloniaDb = colonia? await findOrCreate.coloniaData({ colonia }): null
+    const ciudadDb = ciudad? await findOrCreate.ciudadData({ ciudad }) : null
 
     //if name, calle numeroCasa and colonia exist in db, client alredy exist
     const existCustomer = await Customer.findOne({
@@ -145,7 +149,7 @@ customerRouter.post('/', async (req, res) => {
     const savedCustomer = await newCustomer.save();
 
     delete savedCustomer.password
-    
+
     res.status(201).json({ error: null, msj: 'Customer successfully saved', data: savedCustomer });
   } catch (error) {
     res.status(400).json({ error: true, msj: 'Error creating customer' });

@@ -32,14 +32,12 @@ connect( PORTMONGODB, {
 app.use(json());
 
 
-app.use('/api/',router)
+app.use('/api',router)
 
-
-
-app.get('/doc', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-  
-});
+app.use('/doc',express.static(__dirname+ '/public'));
+// app.get('/doc', (req, res) => {
+//   res.sendFile(__dirname + '/public/');
+// });
 
 // documentation with swagger
 

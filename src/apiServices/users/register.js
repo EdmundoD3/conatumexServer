@@ -1,9 +1,10 @@
 // password
-import { genSalt, hash } from 'bcrypt';
 import { Router } from 'express';
-import Employee from '../models/Employee.js';
-import validateRegister from '../validate/validateRegister.js';
-import { removeEmployeePassword } from '../helpers/removePassword.js';
+import User from '../../models/User.js';
+import validateRegister from './helpers/validateRegister.js';
+import { removeEmployeePassword } from '../../helpers/removePassword.js';
+import { PasswordEncrypter } from '../../helpers/PasswordEncrypter.js';
+import { error } from 'ajv/dist/vocabularies/applicator/dependencies.js';
 
 const router = Router();
 
@@ -81,32 +82,50 @@ const router = Router();
  */
 router.post('/', validateRegister, async (req, res) => {
     const { name, username, phone, email, roles, isActive } = req.body
-
-
-    const isEmailExist = await Employee.findOne({ email });
-    const isUsernameExist = await Employee.findOne({ username });
-    if (isUsernameExist || isEmailExist)
-        return res.status(401).json({ error: true, msj: 'Email or username already registered' })
-
-
-    // hash contraseña
-    const salt = await genSalt(10);
-    const password = await hash(req.body.password, salt);
-    const employe = new Employee({
-        name, username, phone, email, roles, isActive,
-        password
-    });
     try {
+        const isEmailExist = await User.findOne({ email });
+        const isUsernameExist = await User.findOne({ username });
+        if (isUsernameExist || isEmailExist)
+            return res.status(401).json({ error: true, msj: 'Email or username already registered' })
+
+
+        // hash contraseña
+
+        const password = await PasswordEncrypter.encrypt(req.body.password)
+        if (!password) return res.status(400).json({error:true})
+
+        const employe = new User({
+            name, username, phone, email, roles, isActive,
+            password
+        });
         const savedEmploye = await employe.save();
-        
+
         const resEmploye = removeEmployeePassword(savedEmploye)
 
-        res.status(200).json({
+        return res.status(200).json({
             error: null,
             data: resEmploye
         })
     } catch (error) {
-        res.status(400).json({ error:true, msj:error })
+        res.status(400).json({ error: true, msj: error })
+    }
+})
+
+
+// delete employe created for the test
+router.delete('/test', async (req, res) => {
+
+
+    const isEmailExist = await User.findOne({ email: "vanessaprueba@gmail.com" });
+
+    try {
+        const testEmployeDeleted = await User.findByIdAndDelete(isEmailExist._id)
+
+        res.status(200).json({
+            error: null,
+        })
+    } catch (error) {
+        res.status(400).json({ error: true, msj: error })
     }
 })
 

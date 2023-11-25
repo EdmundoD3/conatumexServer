@@ -1,9 +1,9 @@
 import { Router } from "express";
-import authTokenRouter from "./authToken.js";
-import custonerRouter from './customer.js'
-import purchaseRouter from './purchase.js'
-import paymentsRouter from './payments.js'
-import register from './register.js'
+import authTokenRouter from "../services/loggin/authToken.js";
+import custonerRouter from '../apiServices/customer/customer.js'
+import purchaseRouter from '../apiServices/purchase/purchase.js'
+import paymentsRouter from '../apiServices/payments/payments.js'
+import register from '../apiServices/users/register.js'
 
 const router = Router()
 

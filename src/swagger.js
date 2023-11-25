@@ -12,11 +12,11 @@ const options = {
     },
   },
   apis: [
-    'src/routes/authToken.js',
+    'src/users/authToken.js',
+    'src/users/register.js',
     'src/routes/customer.js',
     'src/routes/payments.js',
     'src/routes/purchase.js',
-    'src/routes/register.js',
     'src/models/Ciudad.js',
     'src/models/Cobrador.js',    
     'src/models/Colonia.js',    

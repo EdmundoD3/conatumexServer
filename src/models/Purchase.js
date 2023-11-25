@@ -2,8 +2,8 @@ import { Schema, model } from 'mongoose';
 
 const PurchaseSchema = new Schema({
   customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
-  vendedor: { type: Schema.Types.ObjectId, ref: 'Employee' },
-  cobrador: { type: Schema.Types.ObjectId, ref: 'Employee' },
+  vendedor: { type: Schema.Types.ObjectId, ref: 'User' },
+  cobrador: { type: Schema.Types.ObjectId, ref: 'User' },
   saleDate: Date,
   creditPrice: Number,
   cashPrice: Number,
@@ -20,6 +20,10 @@ const PurchaseSchema = new Schema({
     amount: Number,
     receiptId: String,
   }],
+  updatedAt: {
+    type: Date,
+    default: new Date()
+  },
 });
 
 const Purchase = model('Purchase', PurchaseSchema);
