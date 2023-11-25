@@ -6,7 +6,9 @@ const authByUserNamePassword = async ({username, password}) => {
   const user = await User.findOne({username});
   if (!user) throw new Error("employee not found");
 
-  const validPassword = PasswordEncrypter.validPassword(password,user.password)
+  const validPassword = await PasswordEncrypter.validPassword(password,user.password)
+  if (!validPassword) throw new Error("employee not found");
+  
 
   return user;
 };
