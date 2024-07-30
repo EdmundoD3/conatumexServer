@@ -1,7 +1,9 @@
-import app from "./src/app.js"
+import "./src/database/mongodb.js"
+import app from "./src/server/server.js";
 
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor en el puerto ${PORT}`);
-});
+// Inicia el servidor
+app.listen(port, () => {
+    console.log(`Aplicación de ejemplo escuchando en http://localhost:${port}`);
+  });
