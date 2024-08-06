@@ -12,7 +12,7 @@ const authTokenRouter = Router();
 
 /**
  * @swagger
- * /auth/login:
+ * /user/auth/login:
  *   post:
  *     summary: Autenticación de usuario
  *     description: Endpoint para la autenticación de usuario mediante nombre de usuario y contraseña.
@@ -105,6 +105,7 @@ authTokenRouter.post(
         data: {
           token,
           refreshToken,
+          
         },
         ...HttpStatus.OK,
       });
