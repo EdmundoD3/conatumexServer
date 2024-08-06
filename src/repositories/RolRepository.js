@@ -29,8 +29,11 @@ class RolRepository {
     const someRoleIsUndefined = theRolesMatch.some(item => item === null || item === undefined || Number.isNaN(item));
     return someRoleIsUndefined
   }
-  static get(rol){
-    return Rol.findOne({rol})
+  static async get(rol){
+    const rolFinded = await Rol.findOne({rol})
+    if(rolFinded) return rolFinded
+    const newRol = new Rol({rol:rol})
+    return newRol.save()
   }
 }
 
