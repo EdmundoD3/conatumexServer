@@ -100,12 +100,13 @@ authTokenRouter.post(
         user: req.user,
         key,
       });
-      
+      const {name, username} = req.user
       return res.success({
         data: {
           token,
           refreshToken,
-          
+          user:name,
+          username
         },
         ...HttpStatus.OK,
       });
