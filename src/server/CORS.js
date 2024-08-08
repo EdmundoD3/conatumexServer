@@ -16,7 +16,7 @@ const corsOptions = {
     },
     optionsSuccessStatus: 200,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ['Content-Type', 'Authorization','token']
+    allowedHeaders: ['Content-Type', 'Authorization','token','refreshtoken','key']
   };
 
 export default () => cors(corsOptions);

@@ -1,12 +1,11 @@
 import { Router } from "express";
 import HttpStatus from "../../../constants/httpStatus.js";
-import validatePassword from "../register/middleware/validatePassword.js";
+import validatePassword from "../middleware/validatePassword.js";
 import AdminAuthToken from "../../helpers/adminAuthToken.js";
 import validateRefreshToken from "./middleware/validateRefreshToken.js";
 import { UnauthorizedError } from "../../../errors/typeErrors4xx.js";
 import validateData from "../../middleware/validateData.js";
 import loginSchema from "../schemas/loginSchema.js";
-
 
 const authTokenRouter = Router();
 

@@ -8,9 +8,7 @@ import validateToken from "../../middleware/validateToken.js";
 import validateRoles from "../../middleware/validateRoles.js";
 import validateData from "../../middleware/validateData.js";
 import registerUserSchema from "../schemas/registerUserSchema.js";
-import editUserSchema from "../schemas/editUserSchema.js";
-import changePasswordTypeSchema from "../schemas/changePasswordTypeSchema.js";
-import validatePassword from "./middleware/validatePassword.js";
+import { rolesToRegister } from "../../../../config/allowedRoles.js";
 
 const registerRouter = Router();
 
@@ -123,6 +121,7 @@ registerRouter.use(validateToken);
 registerRouter.post(
   "/inscribe",
   validateData(registerUserSchema),
+  validateRoles(rolesToRegister),
   async (req, res, next) => {
     const validateUser = new ValidateUser(req.body);
     try {
@@ -146,85 +145,6 @@ registerRouter.post(
   }
 );
 
-registerRouter.patch(
-  "/edit/:id",
-  validateData(editUserSchema),
-  validateRoles(["667b428689aaeded0c0d9200"]), //"667b428689aaeded0c0d9200" rol de canela
-  async (req, res, next) => {
-    const { id } = req.params;
 
-    try {
-      await UserRepository.editUser(id, req.body);
-      return res.success({
-        data: {
-          message: "ok",
-        },
-        ...HttpStatus.CREATED,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-// delete employe created for the test
-registerRouter.patch(
-  "/activate/:id",
-  validateRoles(["667b428689aaeded0c0d9200"]),
-  async (req, res) => {
-    const { id } = req.params;
-    try {
-      await UserRepository.updateIsActive(id, true);
-      return res.success({
-        data: {
-          message: "User activated",
-        },
-        ...HttpStatus.CREATED,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-registerRouter.patch(
-  "/deactivate/:id",
-  validateRoles(["667b428689aaeded0c0d9200"]),
-  async (req, res) => {
-    const { id } = req.params;
-    try {
-      await UserRepository.updateIsActive(id, false);
-      return res.success({
-        data: {
-          message: "User desactivated",
-        },
-        ...HttpStatus.CREATED,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-registerRouter.get(
-  "/change-password",
-  validateData(changePasswordTypeSchema),
-  validatePassword,
-  async (req, res) => {
-    const { username } = req.body;
-    try {
-      const newpassword = await PasswordEncrypter.encrypt(req.body.newPassword);
-      await UserRepository.changePassword(username, newpassword);
-      return res.success({
-        data: {
-          message: "User desactivated",
-        },
-        ...HttpStatus.CREATED,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 export default registerRouter;

@@ -3,16 +3,15 @@ import validateRoles from "../middleware/validateRoles.js";
 import validateToken from "../middleware/validateToken.js";
 import CustomerRepository from "../../repositories/CustomerRepository.js";
 import HttpStatus from "../../constants/httpStatus.js";
-import RolRepository from "../../repositories/RolRepository.js";
 import validateData from "../middleware/validateData.js";
 import customerBodySchema from "./schemas/customerSchema.js";
 import customerBodySearchSchema from "./schemas/customerBodySearchSchema.js";
+import { rolesToCustomer } from "../../../config/allowedRoles.js";
 
-const { _id: rolCanelaId } = await RolRepository.get("canela");
-const { _id: rolCobradorId } = await RolRepository.get("admin");
+
 const customerRoutes = express();
 
-const validateRolesMiddleware = validateRoles([rolCanelaId, rolCobradorId]);
+const validateRolesMiddleware = validateRoles(rolesToCustomer);
 
 customerRoutes.use(validateToken);
 customerRoutes.use(validateRolesMiddleware);

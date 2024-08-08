@@ -1,4 +1,4 @@
-import authByUserNamePassword from "../../helpers/authByUserNamePassword.js";
+import authByUserNamePassword from "../helpers/authByUserNamePassword.js";
 
 const validatePassword = async (req, res, next) => {
     const { username, password } = req.body;
