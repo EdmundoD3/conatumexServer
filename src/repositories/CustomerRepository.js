@@ -104,7 +104,7 @@ class CustomerRepository {
     .skip(skip)
     .limit(limit);
   }
-  static async getById(id) {
+  static async findById(id) {
     return Customer.findById(id);
   }
   getByData({

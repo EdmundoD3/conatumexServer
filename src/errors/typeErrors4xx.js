@@ -13,11 +13,12 @@ class UnauthorizedError extends Error {
     this.statusCode = 401;
   }
 }
+
 class JWTExpiredError extends Error {
   constructor(message) {
     super(message);
     this.name = "JWTExpiredError";
-    this.statusCode = 401; // Código de estado HTTP para no autorizado
+    this.statusCode = 401;
   }
 }
 

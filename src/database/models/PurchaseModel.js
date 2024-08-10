@@ -97,7 +97,7 @@ const PurchaseSchema = new Schema({
   },
   products: [{ type: Schema.Types.ObjectId, ref: 'product' }],
   payments: [{
-    paymentDate: Date,
+    Date: Date,
     amount: Number,
     receiptId: String,
   }],

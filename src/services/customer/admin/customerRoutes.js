@@ -1,20 +1,17 @@
 import express from "express";
-import validateRoles from "../middleware/validateRoles.js";
-import validateToken from "../middleware/validateToken.js";
-import CustomerRepository from "../../repositories/CustomerRepository.js";
-import HttpStatus from "../../constants/httpStatus.js";
-import validateData from "../middleware/validateData.js";
-import customerBodySchema from "./schemas/customerSchema.js";
-import customerBodySearchSchema from "./schemas/customerBodySearchSchema.js";
-import { rolesToCustomer } from "../../../config/allowedRoles.js";
+import validateRoles from "../../middleware/validateRoles.js";
+import validateToken from "../../middleware/validateToken.js";
+import CustomerRepository from "../../../repositories/CustomerRepository.js";
+import HttpStatus from "../../../constants/httpStatus.js";
+import validateData from "../../middleware/validateData.js";
+import customerBodySearchSchema from "../schemas/customerBodySearchSchema.js";
+import { rolesToAdminCustomer } from "../../../../config/allowedRoles.js";
 
 
 const customerRoutes = express();
 
-const validateRolesMiddleware = validateRoles(rolesToCustomer);
-
 customerRoutes.use(validateToken);
-customerRoutes.use(validateRolesMiddleware);
+customerRoutes.use(validateRoles(rolesToAdminCustomer));
 
 customerRoutes.get("/getone/:id", async (req, res, next) => {
   const id = req.params.id;
