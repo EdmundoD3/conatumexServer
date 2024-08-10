@@ -15,15 +15,31 @@ class AdminAuthToken {
    * @returns {Uint8Array} - The encoded private key
    * @throws {InternalServerError} - If the private key is not defined
    */
-  static checkPrivateKey() {
-    if (!process.env.JWT_PRIVATE_KEY) {
+  static checkJWTPrivateKey() {
+    const privateKey = process.env.JWT_PRIVATE_KEY
+    if (!privateKey) {
       throw new InternalServerError(
         "JWT_PRIVATE_KEY is not defined in environment variables"
       );
     }
     const encoder = new TextEncoder();
-    return encoder.encode(process.env.JWT_PRIVATE_KEY);
+    return encoder.encode(privateKey);
   }
+    /**
+   * Check if the JWT private key is defined in environment variables
+   * @returns {Uint8Array} - The encoded private key
+   * @throws {InternalServerError} - If the private key is not defined
+   */
+    static checkRefreshJWTPrivateKey() {
+      const privateKey = process.env.REFRESH_JWT_PRIVATE_KEY
+      if (!privateKey) {
+        throw new InternalServerError(
+          "REFRESH_JWT_PRIVATE_KEY is not defined in environment variables"
+        );
+      }
+      const encoder = new TextEncoder();
+      return encoder.encode(privateKey);
+    }
 
   /**
    * Encode JWT with given data and expiry time
@@ -32,9 +48,8 @@ class AdminAuthToken {
    * @param {string} param0.time - The expiration time for the token
    * @returns {Promise<string>} - The signed JWT
    */
-  static async encode({ data, time = "30m" }) {
+  static async encode({ data, time = "30m", privateKey }) {
     try {
-      const privateKey = this.checkPrivateKey();
       const jwtConstructor = new SignJWT(data);
       const jwt = await jwtConstructor
         .setProtectedHeader({ alg: "HS256", typ: "JWT" })
@@ -61,7 +76,8 @@ class AdminAuthToken {
     };
     const thirtyMinutesInMs = 30 * 60 * 1000;
     const expiryDate = new Date(Date.now() + thirtyMinutesInMs);
-    const token = await this.encode({ data, time: "30m" });
+    const privateKey = this.checkJWTPrivateKey();
+    const token = await this.encode({ data, time: "30m",privateKey });
     return new Token(token, expiryDate);
   }
 
@@ -80,7 +96,8 @@ class AdminAuthToken {
     };
     const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
     const expiryDate = new Date(Date.now() + sevenDaysInMs);
-    const token = await this.encode({ data, time: "7d" });
+    const privateKey = this.checkRefreshJWTPrivateKey();
+    const token = await this.encode({ data, time: "7d",privateKey });
     return new Token(token, expiryDate);
   }
 
@@ -90,9 +107,16 @@ class AdminAuthToken {
    * @returns {Promise<Object>} - The payload of the verified JWT
    * @throws {JWTExpiredError} - If the JWT has expired
    */
-  static async verify(token) {
+  static verifyJWT(token){
+    const privateKey = this.checkJWTPrivateKey();
+    return this.verify(token,privateKey)
+  }
+  static verifyRefreshJWT(token){
+    const privateKey = this.checkRefreshJWTPrivateKey();
+    return this.verify(token,privateKey)
+  }
+  static async verify(token,privateKey) {
     try {
-      const privateKey = this.checkPrivateKey();
       const { payload } = await jwtVerify(token, privateKey);
       return payload;
     } catch (error) {

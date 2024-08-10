@@ -221,7 +221,7 @@ authTokenRouter.post(
 authTokenRouter.post(
   "/refreshtoken",
   validateRefreshToken,
-  async (req, res) => {
+  async (req, res, next) => {
     const { key } = req.user;
     const keyToken = req.header("key");
     try {

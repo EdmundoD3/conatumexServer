@@ -15,3 +15,4 @@ class ProductRepository {
     return this.save(product);
   }
 }
+export default ProductRepository

@@ -7,7 +7,7 @@ const validateToken = async (req, res, next) => {
     const token = req.header('token')
     try {
         if (!token) throw new UnauthorizedError("token not exist")
-        const payload = await AdminAuthToken.verify(token)
+        const payload = await AdminAuthToken.verifyJWT(token)
         const user = await UserRepository.findById(payload._id)
         if (!user) throw new ForbiddenError('Access denied')
         if (!user.isActive) throw new UnauthorizedError('User not active Access denied')

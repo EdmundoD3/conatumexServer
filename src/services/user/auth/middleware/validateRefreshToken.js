@@ -13,7 +13,7 @@ const validateRefreshToken = async (req, res, next) => {
       throw new UnauthorizedError("Refresh token does not exist");
     }
 
-    const payload = await AdminAuthToken.verify(refreshToken);
+    const payload = await AdminAuthToken.verifyRefreshJWT(refreshToken);
     const user = await UserRepository.findById(payload._id);
 
     if (!user) {

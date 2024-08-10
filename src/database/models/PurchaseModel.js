@@ -81,6 +81,7 @@ import { Schema, model } from 'mongoose';
  *           example: "2023-06-10T14:30:00Z"
  */
 
+// Define el esquema de compra
 const PurchaseSchema = new Schema({
   customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
   vendedor: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -90,12 +91,12 @@ const PurchaseSchema = new Schema({
   cashPrice: Number,
   cashPriceEndDate: Date,
   collectionDate: Date,
-  collectionFrequency:{amount:String,frequency:String},
+  collectionFrequency: { amount: String, frequency: String },
   sentToCobrador: {
     type: Boolean,
     default: false,
   },
-  products: [{ type: Schema.Types.ObjectId, ref: 'product' }],
+  products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],  
   payments: [{
     Date: Date,
     amount: Number,
@@ -105,13 +106,14 @@ const PurchaseSchema = new Schema({
     type: Date,
     default: new Date()
   },
-  status:{type:String, default:"inactive"},
-  isActive:{
+  status: { type: String, default: "inactive" },
+  isActive: {
     type: Boolean,
     default: false,
   },
 });
 
+// Registra el modelo con el nombre 'Purchase'
 const Purchase = model('Purchase', PurchaseSchema);
 
 export default Purchase;
