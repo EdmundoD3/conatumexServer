@@ -11,9 +11,8 @@ import { rolesToAdminCustomer } from "../../../../config/allowedRoles.js";
 const customerRoutes = express();
 
 customerRoutes.use(validateToken);
-customerRoutes.use(validateRoles(rolesToAdminCustomer));
-
-customerRoutes.get("/getone/:id", async (req, res, next) => {
+const validateCustomerRoles = validateRoles(rolesToAdminCustomer)
+customerRoutes.get("/getone/:id",validateCustomerRoles, async (req, res, next) => {
   const id = req.params.id;
   try {
     const customerData = await CustomerRepository.getById(id);
@@ -29,6 +28,7 @@ customerRoutes.get("/getone/:id", async (req, res, next) => {
 
 customerRoutes.get(
   "/search",
+  validateCustomerRoles,
   validateData(customerBodySearchSchema),
   async (req, res, next) => {
     const page = parseInt(req.query.page, 10) || 1;

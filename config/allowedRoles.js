@@ -19,5 +19,5 @@ export {
   rolesToRegister,
   rolesToEditYourOwnAccount,
   rolesToActivateOrDesactivate,
-  rolesToCobranza,
+  rolesToCobranza
 };

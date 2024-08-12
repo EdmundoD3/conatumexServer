@@ -8,13 +8,13 @@ import validateData from "../../middleware/validateData.js";
 import lastDateUpdateBodySchema from "../schemas/lastDateUpdateSchema.js";
 
 const cobranzaRouter = express();
-
 cobranzaRouter.use(validateToken);
-cobranzaRouter.use(validateRoles(rolesToCobranza));
 
 // await PurchaseRepository.addPrueba()
 
-cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
+cobranzaRouter.get("/get-all-purchases", 
+  validateRoles(rolesToCobranza), 
+  async (req, res, next) => {
   const { id } = req.user;
   try {
     const purchasesActive = await PurchaseRepository.findActiveByIdCobrador(id);
@@ -30,6 +30,7 @@ cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
 
 cobranzaRouter.post(
   "/get-lastDateUpdate/",
+  validateRoles(rolesToCobranza),
   validateData(lastDateUpdateBodySchema),
   async (req, res, next) => {
     const { id } = req.user;
@@ -45,7 +46,7 @@ cobranzaRouter.post(
         new Date(lastDateUpdate)
       );
       return res.success({
-        data: {purchases,customers},
+        data: { purchases, customers },
         ...HttpStatus.OK,
       });
     } catch (error) {
