@@ -29,19 +29,23 @@ cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
 });
 
 cobranzaRouter.post(
-  "/get-all-purchases-lastDateUpdate/",
+  "/get-lastDateUpdate/",
   validateData(lastDateUpdateBodySchema),
   async (req, res, next) => {
     const { id } = req.user;
     const { lastDateUpdate } = req.body;
 
     try {
-      const purchasesActive = await PurchaseRepository.findLastDateUpdate(
+      const purchases = await PurchaseRepository.findByLastDateUpdate(
+        id,
+        new Date(lastDateUpdate)
+      );
+      const customers = await PurchaseRepository.findCustomerByLastDateUpdate(
         id,
         new Date(lastDateUpdate)
       );
       return res.success({
-        data: purchasesActive,
+        data: {purchases,customers},
         ...HttpStatus.OK,
       });
     } catch (error) {

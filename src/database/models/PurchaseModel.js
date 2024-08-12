@@ -106,7 +106,7 @@ const PurchaseSchema = new Schema({
     type: Date,
     default: new Date()
   },
-  status: { type: String, default: "inactive" },
+  status: { type: Schema.Types.ObjectId, ref: 'Status' },
   isActive: {
     type: Boolean,
     default: false,
