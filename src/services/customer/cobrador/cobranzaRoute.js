@@ -18,12 +18,13 @@ cobranzaRouter.get("/get-all-purchases",
   const { id } = req.user;
   try {
     const purchasesActive = await PurchaseRepository.findActiveByIdCobrador(id);
-    console.log({ purchasesActive });
+
     return res.success({
       data: purchasesActive,
       ...HttpStatus.OK,
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });

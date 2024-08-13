@@ -1,22 +1,24 @@
 import Product from "../database/models/ProductsModel.js";
 import Status from "../database/models/StatusModel.js";
 import Purchase from "../database/models/PurchaseModel.js";
-import { cleanPurchasesWithoutCustomer, formatCustomer, formatPurchasesAndCustomer } from "./helpers/formatPurchase.js";
+import { cleanPurchasesWithoutCustomer, formatCustomerFromPurchase, formatPurchasesAndCustomer } from "./helpers/formatPurchase.js";
 
 class PurchaseRepository {
   static find(param) {
     return Purchase.find(param)
       .populate({
-        path: "vendedor",
+        path: "vendedorId",
         select: "name",
       })
-      .populate("status")
-      .populate("products");
+      .populate("statusId")
+      .populate({
+        path: 'products.productId',
+      });
   }
   static findWithCustomer(param) {
     return this.find(param)
       .populate({
-        path: "customer",
+        path: "customerId",
         populate: {
           path: "purchases statusId direction.coloniaId direction.ciudadId",
         },
@@ -42,15 +44,17 @@ class PurchaseRepository {
 
   static async findActiveByIdCobrador(cobradorId) {
     const query = {
-      $and: [{ isActive: true }, { cobrador: cobradorId }],
+      $and: [{ isActive: true }, { cobradorId }],
     };
-    return this.find(query);
+    const purchases = await this.find(query).populate("customerId");
+    // const cleanedPurchases = cleanPurchasesWithoutCustomer(purchases)
+    return formatPurchasesAndCustomer(purchases)
   }
 
   static async findByLastDateUpdate(cobradorId, lastDateUpdate) {
     const query = {
       $and: [
-        { cobrador: cobradorId },
+        { cobradorId },
         { updatedAt: { $gt: new Date(lastDateUpdate) } },
       ],
     };
@@ -71,7 +75,7 @@ class PurchaseRepository {
     });
 
     const cleanedPurchases = cleanPurchasesWithoutCustomer(purchases)
-    return formatCustomer(cleanedPurchases)
+    return formatCustomerFromPurchase(cleanedPurchases)
   }
 }
 

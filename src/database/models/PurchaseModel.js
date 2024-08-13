@@ -81,11 +81,10 @@ import { Schema, model } from 'mongoose';
  *           example: "2023-06-10T14:30:00Z"
  */
 
-// Define el esquema de compra
 const PurchaseSchema = new Schema({
-  customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
-  vendedor: { type: Schema.Types.ObjectId, ref: 'User' },
-  cobrador: { type: Schema.Types.ObjectId, ref: 'User' },
+  customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
+  vendedorId: { type: Schema.Types.ObjectId, ref: 'User' },
+  cobradorId: { type: Schema.Types.ObjectId, ref: 'User' },
   saleDate: Date,
   creditPrice: Number,
   cashPrice: Number,
@@ -96,7 +95,8 @@ const PurchaseSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  products: [{ type: Schema.Types.ObjectId, ref: 'Product' }],  
+  products: [{ quantity: Number, productId: { type: Schema.Types.ObjectId, ref: 'Product' } }],
+  totalPaid: Number,
   payments: [{
     Date: Date,
     amount: Number,
@@ -106,7 +106,7 @@ const PurchaseSchema = new Schema({
     type: Date,
     default: new Date()
   },
-  status: { type: Schema.Types.ObjectId, ref: 'Status' },
+  statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
   isActive: {
     type: Boolean,
     default: false,

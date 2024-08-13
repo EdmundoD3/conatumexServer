@@ -20,6 +20,16 @@ class CustomerModelRes {
   }
 }
 
+class ProductModelRes {
+  constructor({quantity, product, productId}){
+    this.quantity =quantity
+    this.product = product
+    this.productId = productId
+  }
+}
+
+const ProductFormater = (products) => products.map(({quantity,productId})=>({quantity,product:productId.product,productId:productId._id}))
+
 class PurchaseModelRes {
   constructor({
     vendedor,
@@ -49,8 +59,8 @@ class PurchaseModelRes {
 const formatPurchasesAndCustomer = (purchases = []) => {
   return purchases.map(
     ({
-      customer,
-      vendedor,
+      customerId:customer,
+      vendedorId:vendedor,
       saleDate,
       creditPrice,
       cashPrice,
@@ -59,7 +69,7 @@ const formatPurchasesAndCustomer = (purchases = []) => {
       collectionFrequency,
       products,
       payments,
-      status,
+      statusId:status,
     }) => {
       const newCustomer = {
         name: customer.name,
@@ -84,7 +94,7 @@ const formatPurchasesAndCustomer = (purchases = []) => {
         cashPriceEndDate,
         collectionDate,
         collectionFrequency,
-        products,
+        products:ProductFormater(products),
         payments,
         status: status.status,
       };
@@ -98,11 +108,10 @@ const formatPurchasesAndCustomer = (purchases = []) => {
   );
 };
 
-const formatCustomer = (purchases = []) => {
+const formatPurchases = (purchases = []) => {
   return purchases.map(
     ({
-      customer,
-      vendedor,
+      vendedorId:vendedor,
       saleDate,
       creditPrice,
       cashPrice,
@@ -111,7 +120,30 @@ const formatCustomer = (purchases = []) => {
       collectionFrequency,
       products,
       payments,
-      status,
+      statusId:status,
+    }) => {
+
+      const newPurchase = {
+        vendedor: vendedor.name,
+        saleDate,
+        creditPrice,
+        cashPrice,
+        cashPriceEndDate,
+        collectionDate,
+        collectionFrequency,
+        products:ProductFormater(products),
+        payments,
+        status: status.status,
+      };
+        return  new PurchaseModelRes(newPurchase)
+    }
+  );
+};
+
+const formatCustomerFromPurchase = (purchases = []) => {
+  return purchases.map(
+    ({
+      customerId:customer,
     }) => {
       const newCustomer = {
         name: customer.name,
@@ -134,6 +166,6 @@ const formatCustomer = (purchases = []) => {
 };
 
 const cleanPurchasesWithoutCustomer = (purchases = []) =>
-  purchases.filter((purchase) => purchase.customer);
+  purchases.filter((purchase) => purchase.customerId);
 
-export { cleanPurchasesWithoutCustomer, formatPurchasesAndCustomer, formatCustomer };
+export { cleanPurchasesWithoutCustomer, formatPurchases, formatPurchasesAndCustomer, formatCustomerFromPurchase };
