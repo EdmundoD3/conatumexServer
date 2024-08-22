@@ -4,7 +4,7 @@ import customerRoutes from "./admin/customerRoutes.js";
 
 const customerRouter = express();
 
-customerRouter.use("/",customerRoutes)
+customerRouter.use("/admin",customerRoutes)
 
 customerRouter.use("/cobrador",cobranzaRouter)
 

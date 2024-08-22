@@ -1,11 +1,30 @@
+class CiudadModelRes {
+  constructor({ciudad,_id}){
+    this.ciudad = ciudad
+    this.ciudadId = _id
+  }
+}
+class ColoniaModelRes {
+  constructor({colonia,_id}){
+    this.colonia = colonia
+    this.coloniaId = _id
+  }
+}
+
 class DirectionModelRes {
-  constructor({ calle, numeroCasa, colonia, ciudad, entreCalles, referencia }) {
+  constructor({ calle, numeroCasa, coloniaId, ciudadId, entreCalles, referencia }) {
     this.calle = calle;
     this.numeroCasa = numeroCasa;
-    this.colonia = colonia;
-    this.ciudad = ciudad;
+    this.colonia = new ColoniaModelRes(coloniaId);
+    this.ciudad = new CiudadModelRes(ciudadId);
     this.entreCalles = entreCalles;
     this.referencia = referencia;
+  }
+}
+class StatusModelRes {
+  constructor({status,_id}){
+    this.status = status
+    this.statusId = _id
   }
 }
 
@@ -16,7 +35,7 @@ class CustomerModelRes {
     this.phone = phone;
     this.date = date;
     this.direction = new DirectionModelRes(direction);
-    this.status = status;
+    this.status = new StatusModelRes(status);
   }
 }
 
@@ -28,7 +47,8 @@ class ProductModelRes {
   }
 }
 
-const ProductFormater = (products) => products.map(({quantity,productId})=>({quantity,product:productId.product,productId:productId._id}))
+
+const ProductFormater = (products) => products.map(({quantity,productId})=>new ProductModelRes({quantity,product:productId.product,productId:productId._id}))
 
 class PurchaseModelRes {
   constructor({
@@ -52,7 +72,7 @@ class PurchaseModelRes {
     this.collectionFrequency = collectionFrequency;
     this.products = products;
     this.payments = payments;
-    this.status = status;
+    this.status = new StatusModelRes(status);
   }
 }
 
@@ -79,12 +99,12 @@ const formatPurchasesAndCustomer = (purchases = []) => {
         direction: {
           calle: customer.direction.calle,
           numeroCasa: customer.direction.numeroCasa,
-          colonia: customer.direction.coloniaId.colonia,
-          ciudad: customer.direction.ciudadId.ciudad,
+          coloniaId: customer.direction.coloniaId,
+          ciudadId: customer.direction.ciudadId,
           entreCalles: customer.direction.calle,
           referencia: customer.direction.referencia,
         },
-        status: customer.statusId.status,
+        status: customer.statusId,
       };
       const newPurchase = {
         vendedor: vendedor.name,
@@ -96,7 +116,7 @@ const formatPurchasesAndCustomer = (purchases = []) => {
         collectionFrequency,
         products:ProductFormater(products),
         payments,
-        status: status.status,
+        status: status,
       };
 
       const res = {
@@ -153,12 +173,12 @@ const formatCustomerFromPurchase = (purchases = []) => {
         direction: {
           calle: customer.direction.calle,
           numeroCasa: customer.direction.numeroCasa,
-          colonia: customer.direction.coloniaId.colonia,
-          ciudad: customer.direction.ciudadId.ciudad,
+          coloniaId: customer.direction.coloniaId,
+          ciudadId: customer.direction.ciudadId,
           entreCalles: customer.direction.calle,
           referencia: customer.direction.referencia,
         },
-        status: customer.statusId.status,
+        status: customer.statusId,
       };
       return new CustomerModelRes(newCustomer)
     }

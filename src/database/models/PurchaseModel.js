@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 /**
  * @swagger
@@ -82,31 +82,46 @@ import { Schema, model } from 'mongoose';
  */
 
 const PurchaseSchema = new Schema({
-  customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
-  vendedorId: { type: Schema.Types.ObjectId, ref: 'User' },
-  cobradorId: { type: Schema.Types.ObjectId, ref: 'User' },
+  customerId: { type: Schema.Types.ObjectId, ref: "Customer" },
+  vendedorId: { type: Schema.Types.ObjectId, ref: "User" },
+  cobradorId: { type: Schema.Types.ObjectId, ref: "User" },
   saleDate: Date,
   creditPrice: Number,
   cashPrice: Number,
   cashPriceEndDate: Date,
   collectionDate: Date,
+  notes: [
+    {
+      date: { type: Date, required: true, unique: true },
+      user: { type: Schema.Types.ObjectId, ref: "User" },
+      note: String,
+    },
+  ],
   collectionFrequency: { amount: String, frequency: String },
   sentToCobrador: {
     type: Boolean,
     default: false,
   },
-  products: [{ quantity: Number, productId: { type: Schema.Types.ObjectId, ref: 'Product' } }],
+  products: [
+    {
+      quantity: Number,
+      productId: { type: Schema.Types.ObjectId, ref: "Product" },
+    },
+  ],
   totalPaid: Number,
-  payments: [{
-    Date: Date,
-    amount: Number,
-    receiptId: String,
-  }],
+  payments: [
+    {
+      date: { type: Date, required: true, unique: true },
+      amount: Number,
+      receiptId: String,
+      userId: { type: Schema.Types.ObjectId, ref: "User" },
+    },
+  ],
   updatedAt: {
     type: Date,
-    default: new Date()
+    default: new Date(),
   },
-  statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
+  statusId: { type: Schema.Types.ObjectId, ref: "Status" },
   isActive: {
     type: Boolean,
     default: false,
@@ -114,6 +129,6 @@ const PurchaseSchema = new Schema({
 });
 
 // Registra el modelo con el nombre 'Purchase'
-const Purchase = model('Purchase', PurchaseSchema);
+const Purchase = model("Purchase", PurchaseSchema);
 
 export default Purchase;

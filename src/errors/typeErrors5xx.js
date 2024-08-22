@@ -6,6 +6,14 @@ class InternalServerError extends Error {
   }
 }
 
+class DatabaseError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "DatabaseError";
+    this.statusCode = 500; // Internal Server Error
+  }
+}
+
 class BadGatewayError extends Error {
   constructor(message) {
     super(message);
@@ -35,4 +43,5 @@ export {
   GatewayTimeoutError,
   InternalServerError,
   ServiceUnavailableError,
+  DatabaseError
 };

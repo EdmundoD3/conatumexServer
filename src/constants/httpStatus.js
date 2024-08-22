@@ -21,7 +21,7 @@ const HttpStatus = {
     message: "Unauthorized",
   },
   FORBIDDEN: {
-    code: 403,
+    code: 404,
     message: "Forbidden",
   },
   NOT_FOUND: {

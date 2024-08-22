@@ -11,6 +11,7 @@ import { rolesToAdminCustomer } from "../../../../config/allowedRoles.js";
 const customerRoutes = express();
 
 customerRoutes.use(validateToken);
+
 const validateCustomerRoles = validateRoles(rolesToAdminCustomer)
 customerRoutes.get("/getone/:id",validateCustomerRoles, async (req, res, next) => {
   const id = req.params.id;
