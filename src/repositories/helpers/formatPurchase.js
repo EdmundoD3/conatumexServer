@@ -48,7 +48,6 @@ class ProductModelRes {
 }
 
 
-const ProductFormater = (products) => products.map(({quantity,productId})=>new ProductModelRes({quantity,product:productId.product,productId:productId._id}))
 
 class PurchaseModelRes {
   constructor({
@@ -75,6 +74,9 @@ class PurchaseModelRes {
     this.status = new StatusModelRes(status);
   }
 }
+
+const ProductFormater = (products) => products.map(({quantity,productId})=>new ProductModelRes({quantity,product:productId.product,productId:productId._id}))
+
 
 const formatPurchasesAndCustomer = (purchases = []) => {
   return purchases.map(

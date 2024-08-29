@@ -53,8 +53,12 @@ class PurchaseRepository {
     const query = {
       $and: [{ isActive: true }, { cobradorId }],
     };
-    const purchases = await this.find(query).populate("customerId");
-    // const cleanedPurchases = cleanPurchasesWithoutCustomer(purchases)
+    const purchases = await this.find(query).populate({
+      path: "customerId",
+      populate: {
+        path: "statusId direction.coloniaId direction.ciudadId",
+      },
+    });
     return formatPurchasesAndCustomer(purchases);
   }
 
