@@ -11,8 +11,9 @@ const options = {
   },
   apis: ['./src/services/user/register/register.js',
     './src/services/user/auth/auth.js',
+    './src/services/customer/cobrador/*',
     './src/services/user/schemas/*', // user middleware schemas
-    './src/database/models/*'
+    './src/database/models/*',
   ], // Rutas a tus archivos de rutas
 };
 

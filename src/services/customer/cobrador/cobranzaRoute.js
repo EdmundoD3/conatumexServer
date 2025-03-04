@@ -7,12 +7,14 @@ import { rolesToCobranza } from "../../../../config/allowedRoles.js";
 import validateData from "../../middleware/validateData.js";
 import lastDateUpdateBodySchema from "../schemas/lastDateUpdateSchema.js";
 import cobradorPurchaseUpdateBodySchema from "../schemas/cobradorPurchaseUpdateBodySchema.js";
+import idPurchaseBodySchema from "../schemas/idsClientsSquema.js";
 
 const cobranzaRouter = express();
 cobranzaRouter.use(validateToken);
 cobranzaRouter.use(validateRoles(rolesToCobranza));
 
 // await PurchaseRepository.addPrueba()
+
 
 cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
   const { id } = req.user;
@@ -30,7 +32,7 @@ cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
 });
 
 cobranzaRouter.post(
-  "/get-lastDateUpdate/",
+  "/get-last-date-update/",
   validateData(lastDateUpdateBodySchema),
   async (req, res, next) => {
     const { id } = req.user;
@@ -40,13 +42,13 @@ cobranzaRouter.post(
         id,
         new Date(lastDateUpdate)
       );
-      const customers = await PurchaseRepository.findCustomerByLastDateUpdate(
-        id,
-        new Date(lastDateUpdate)
-      );
+      // const customers = await PurchaseRepository.findCustomerByLastDateUpdate(
+      //   id,
+      //   new Date(lastDateUpdate)
+      // );
       const dateUpdate = new Date();
       return res.success({
-        data: { purchases, customers, dateUpdate },
+        data: { purchases, dateUpdate },
         ...HttpStatus.OK,
       });
     } catch (error) {
@@ -60,13 +62,13 @@ cobranzaRouter.post(
   validateData(cobradorPurchaseUpdateBodySchema),
   async (req, res, next) => {
     const { id } = req.user;
-    const {data} = req.body;
+    const { data } = req.body;
 
     try {
-      
+
       await PurchaseRepository.updateCobradorPurchases(
-      id,data
-    );
+        id, data
+      );
       const dateUpdate = new Date();
       return res.success({
         data: { dateUpdate },
@@ -77,5 +79,25 @@ cobranzaRouter.post(
     }
   }
 );
+
+cobranzaRouter.post("/ischange",
+  validateData(idPurchaseBodySchema),
+  async (req, res, next) => {
+    const { id } = req.user;
+    const { data } = req.body;
+    try {
+      await PurchaseRepository.verifyCobrador(
+        data, id
+      );
+      const dateUpdate = new Date();
+      return res.success({
+        data: { dateUpdate },
+        ...HttpStatus.OK,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+)
 
 export default cobranzaRouter;

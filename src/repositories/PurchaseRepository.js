@@ -18,6 +18,10 @@ class PurchaseRepository {
         path: "vendedorId",
         select: "name",
       })
+      .populate({
+        path: "cobradorId",
+        select: "name",
+      })
       .populate("statusId")
       .populate({
         path: "products.productId",
@@ -134,6 +138,13 @@ class PurchaseRepository {
         );
       throw error;
     }
+  }
+  static async verifyCobrador(ids=[],idToCheck){
+    const purchases = await Purchase.find({
+      _id: { $in: ids },
+      cobradorId: { $ne: idToCheck },
+    });
+    return purchases.map(({_id})=>({_id}));
   }
 }
 

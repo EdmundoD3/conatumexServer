@@ -5,7 +5,7 @@ const cobradorPurchaseUpdateBodySchema = Type.Object(
     data: Type.Array(
       Type.Object({
         id: Type.String({
-            minLength:1,
+          minLength: 1,
           errorMessage: {
             type: "id is required",
           },
@@ -14,7 +14,7 @@ const cobradorPurchaseUpdateBodySchema = Type.Object(
           Type.Array(
             Type.Object({
               date: Type.String({
-                minLength:6,
+                minLength: 6,
                 errorMessage: {
                   type: "date is required",
                 },
@@ -29,32 +29,32 @@ const cobradorPurchaseUpdateBodySchema = Type.Object(
         ),
         collectionFrequency: Type.Optional(
           Type.Object({
-            frequency:Type.String({
-              minLength:2,
-              maxLength:4,
-            errorMessage: {
-              type: "collectionFrequency is required",
-            },
-          }),
-          amount:Type.String({
-            errorMessage: {
-              type: "collectionFrequency is required",
-            },
-          }),
+            frequency: Type.String({
+              minLength: 2,
+              maxLength: 4,
+              errorMessage: {
+                type: "collectionFrequency is required",
+              },
+            }),
+            amount: Type.String({
+              errorMessage: {
+                type: "collectionFrequency is required",
+              },
+            }),
           })
-          
+
         ),
         payments: Type.Optional(
           Type.Array(
             Type.Object({
               date: Type.String({
-                minLength:6,
+                minLength: 6,
                 errorMessage: {
                   type: "date is required",
                 },
               }),
               amount: Type.Number({
-                minimum:50,
+                minimum: 50,
                 errorMessage: {
                   type: "amount is required",
                 },

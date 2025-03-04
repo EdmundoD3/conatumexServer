@@ -74,18 +74,19 @@ import { Schema, model } from 'mongoose';
 const customerSchema = new Schema({
   name: String,
   password: String,
-  email:String,
+  email: String,
   phone: String,
   date: Date,
   direction: {
     calle: String,
     numeroCasa: String,
     coloniaId: { type: Schema.Types.ObjectId, ref: 'Colonia' },
+    estadoId: { type: Schema.Types.ObjectId, ref: 'Estado' },
     ciudadId: { type: Schema.Types.ObjectId, ref: 'Ciudad' },
     entreCalles: String,
-    referencia:String,
+    referencia: String,
   },
-  statusId:{ type: Schema.Types.ObjectId, ref: 'Status' },
+  statusId: { type: Schema.Types.ObjectId, ref: 'Status' },
   purchases: [{ type: Schema.Types.ObjectId, ref: 'Purchase' }],
   updatedAt: {
     type: Date,
