@@ -8,6 +8,7 @@ import validateData from "../../middleware/validateData.js";
 import lastDateUpdateBodySchema from "../schemas/lastDateUpdateSchema.js";
 import cobradorPurchaseUpdateBodySchema from "../schemas/cobradorPurchaseUpdateBodySchema.js";
 import idPurchaseBodySchema from "../schemas/idsClientsSquema.js";
+import cobradorPurchaseActualizeBodySchema from "../schemas/cobtadorPurchaseActualizeBodySchema.js";
 
 const cobranzaRouter = express();
 cobranzaRouter.use(validateToken);
@@ -30,6 +31,8 @@ cobranzaRouter.get("/get-all-purchases", async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 cobranzaRouter.post(
   "/get-last-date-update/",
@@ -79,6 +82,43 @@ cobranzaRouter.post(
     }
   }
 );
+
+cobranzaRouter.post(
+  "/actualize-data",
+  validateData(cobradorPurchaseActualizeBodySchema),
+  async (req, res, next) => {
+    const { id } = req.user;
+    const { data, lastDateUpdate } = req.body;
+
+    const sessionPurchase = new PurchaseRepository();
+    // await sessionPurchase.startSession();
+
+    try {
+      const dateUpdate = new Date();
+      const purchases = await sessionPurchase.findByLastDateUpdate(
+        id,
+        new Date(lastDateUpdate)
+      );
+
+      await sessionPurchase.updateCobradorPurchases(
+        id,
+        data);
+
+      // await sessionPurchase.commitTransaction();
+
+      return res.success({
+        data: { dateUpdate, purchases },
+        ...HttpStatus.OK,
+      });
+    } catch (error) {
+      // await sessionPurchase.abortTransaction();
+      next(error);
+    }
+  }
+);
+
+
+
 
 cobranzaRouter.post("/ischange",
   validateData(idPurchaseBodySchema),

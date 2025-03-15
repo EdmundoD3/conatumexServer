@@ -1,19 +1,23 @@
 openapi: 3.0.0
 info:
-  title: Cobranza API
-  description: API para gestionar las operaciones de cobranza.
+  title: Conatumex Server API
+  description: API para gestionar clientes, compras y cobranzas.
   version: 1.0.0
 servers:
   - url: http://localhost:3000
     description: Servidor local de desarrollo
 
+tags:
+  - name: Cobranza
+    description: Endpoints relacionados con la gestión de cobranzas.
+
 paths:
-  /cobranza/get-all-purchases:
+  /customer/cobrador/get-all-purchases:
     get:
       summary: Obtiene todas las compras activas del cobrador.
       description: Retorna una lista de compras activas asociadas al cobrador autenticado.
       tags:
-        - Cobrador
+        - Cobranza
       security:
         - BearerAuth: []
       responses:
@@ -33,69 +37,21 @@ paths:
                       client:
                         type: array
                         items:
-                          $ref: '#/components/schemas/PurchaseModelRes'
+                          $ref: '#/components/schemas/PurchaseModel'
                       dateUpdate:
                         type: string
                         format: date-time
-        '400':
-          description: Solicitud inválida.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Solicitud inválida"
         '401':
           description: No autorizado (token inválido o no proporcionado).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "No autorizado"
         '403':
           description: Acceso denegado (roles no válidos).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Acceso denegado"
-        '500':
-          description: Error interno del servidor.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error interno del servidor"
 
-  /cobranza/get-last-date-update:
+  /customer/cobrador/get-last-date-update:
     post:
       summary: Obtiene las compras actualizadas desde una fecha específica.
       description: Retorna las compras que han sido actualizadas después de la fecha proporcionada.
       tags:
-        - Cobrador
+        - Cobranza
       security:
         - BearerAuth: []
       requestBody:
@@ -126,69 +82,23 @@ paths:
                       purchases:
                         type: array
                         items:
-                          $ref: '#/components/schemas/PurchaseModelRes'
+                          $ref: '#/components/schemas/PurchaseModel'
                       dateUpdate:
                         type: string
                         format: date-time
         '400':
           description: Solicitud inválida (fecha no proporcionada o en formato incorrecto).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Solicitud inválida"
         '401':
           description: No autorizado (token inválido o no proporcionado).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "No autorizado"
         '403':
           description: Acceso denegado (roles no válidos).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Acceso denegado"
-        '500':
-          description: Error interno del servidor.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error interno del servidor"
 
-  /cobranza/update-purchases:
+  /customer/cobrador/update-purchases:
     post:
       summary: Actualiza las compras del cobrador.
       description: Permite al cobrador actualizar las compras asociadas a su cuenta.
       tags:
-        - Cobrador
+        - Cobranza
       security:
         - BearerAuth: []
       requestBody:
@@ -221,63 +131,68 @@ paths:
                         format: date-time
         '400':
           description: Solicitud inválida (datos no proporcionados o en formato incorrecto).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Solicitud inválida"
         '401':
           description: No autorizado (token inválido o no proporcionado).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "No autorizado"
         '403':
           description: Acceso denegado (roles no válidos).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Acceso denegado"
-        '500':
-          description: Error interno del servidor.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error interno del servidor"
 
-  /cobranza/ischange:
+  /customer/cobrador/actualize-data:
+    post:
+      summary: Actualiza los datos de las compras del cobrador.
+      description: Permite al cobrador actualizar los datos de las compras y obtener las compras actualizadas desde una fecha específica.
+      tags:
+        - Cobranza
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PurchaseUpdateModel'
+                lastDateUpdate:
+                  type: string
+                  format: date-time
+                  description: Fecha a partir de la cual se buscan actualizaciones.
+      responses:
+        '200':
+          description: Datos actualizados correctamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      dateUpdate:
+                        type: string
+                        format: date-time
+                      purchases:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PurchaseModel'
+        '400':
+          description: Solicitud inválida (datos no proporcionados o en formato incorrecto).
+        '401':
+          description: No autorizado (token inválido o no proporcionado).
+        '403':
+          description: Acceso denegado (roles no válidos).
+
+  /customer/cobrador/ischange:
     post:
       summary: Verifica si las compras han cambiado de cobrador.
       description: Retorna las compras que han sido asignadas a otro cobrador.
       tags:
-        - Cobrador
+        - Cobranza
       security:
         - BearerAuth: []
       requestBody:
@@ -311,56 +226,10 @@ paths:
                         format: date-time
         '400':
           description: Solicitud inválida (datos no proporcionados o en formato incorrecto).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Solicitud inválida"
         '401':
           description: No autorizado (token inválido o no proporcionado).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "No autorizado"
         '403':
           description: Acceso denegado (roles no válidos).
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Acceso denegado"
-        '500':
-          description: Error interno del servidor.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error interno del servidor"
 
 components:
   securitySchemes:
@@ -370,164 +239,161 @@ components:
       bearerFormat: JWT
 
   schemas:
-    CiudadModelRes:
+    PurchaseModel:
       type: object
       properties:
-        ciudad:
+        customerId:
           type: string
-        ciudadId:
+          format: objectId
+          description: ID del cliente asociado a la compra.
+        vendedorId:
           type: string
-      tags:
-        - Ubicación
-
-    ColoniaModelRes:
-      type: object
-      properties:
-        colonia:
+          format: objectId
+          description: ID del vendedor asociado a la compra.
+        cobradorId:
           type: string
-        coloniaId:
-          type: string
-      tags:
-        - Ubicación
-
-    EstadoModelRes:
-      type: object
-      properties:
-        estado:
-          type: string
-        estadoId:
-          type: string
-      tags:
-        - Ubicación
-
-    DirectionModelRes:
-      type: object
-      properties:
-        calle:
-          type: string
-        numeroCasa:
-          type: string
-        colonia:
-          $ref: '#/components/schemas/ColoniaModelRes'
-        ciudad:
-          $ref: '#/components/schemas/CiudadModelRes'
-        estado:
-          $ref: '#/components/schemas/EstadoModelRes'
-        entreCalles:
-          type: string
-        referencia:
-          type: string
-      tags:
-        - Ubicación
-
-    StatusModelRes:
-      type: object
-      properties:
-        status:
-          type: string
-        statusId:
-          type: string
-      tags:
-        - General
-
-    CustomerModelRes:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        date:
-          type: string
-          format: date-time
-        direction:
-          $ref: '#/components/schemas/DirectionModelRes'
-        status:
-          $ref: '#/components/schemas/StatusModelRes'
-        updatedAt:
-          type: string
-          format: date-time
-      tags:
-        - Clientes
-
-    ProductModelRes:
-      type: object
-      properties:
-        quantity:
-          type: number
-        product:
-          type: string
-        productId:
-          type: string
-      tags:
-        - Productos
-
-    UserModelRes:
-      type: object
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-      tags:
-        - Usuarios
-
-    PurchaseModelRes:
-      type: object
-      properties:
-        id:
-          type: string
-        vendedor:
-          $ref: '#/components/schemas/UserModelRes'
-        cobrador:
-          $ref: '#/components/schemas/UserModelRes'
+          format: objectId
+          description: ID del cobrador asociado a la compra.
         saleDate:
           type: string
           format: date-time
+          description: Fecha de la venta.
         creditPrice:
           type: number
+          description: Precio de la compra a crédito.
         cashPrice:
           type: number
+          description: Precio de la compra al contado.
         cashPriceEndDate:
           type: string
           format: date-time
+          description: Fecha límite para el precio al contado.
         collectionDate:
           type: string
           format: date-time
+          description: Fecha de cobro programada.
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+                description: Fecha de la nota.
+              user:
+                type: string
+                format: objectId
+                description: ID del usuario que agregó la nota.
+              note:
+                type: string
+                description: Contenido de la nota.
         collectionFrequency:
-          type: string
+          type: object
+          properties:
+            amount:
+              type: string
+              description: Monto de la frecuencia de cobro.
+            frequency:
+              type: string
+              description: Frecuencia de cobro (diario, semanal, mensual).
+        sentToCobrador:
+          type: boolean
+          description: Indica si la compra ha sido enviada al cobrador.
         products:
           type: array
           items:
-            $ref: '#/components/schemas/ProductModelRes'
+            type: object
+            properties:
+              quantity:
+                type: number
+                description: Cantidad del producto.
+              productId:
+                type: string
+                format: objectId
+                description: ID del producto.
+        totalPaid:
+          type: number
+          description: Total pagado hasta la fecha.
         payments:
           type: array
           items:
             type: object
-        status:
-          $ref: '#/components/schemas/StatusModelRes'
+            properties:
+              date:
+                type: string
+                format: date-time
+                description: Fecha del pago.
+              amount:
+                type: number
+                description: Monto del pago.
+              receiptId:
+                type: string
+                description: ID del recibo de pago.
+              userId:
+                type: string
+                format: objectId
+                description: ID del usuario que registró el pago.
         updatedAt:
           type: string
           format: date-time
-      tags:
-        - Compras
+          description: Fecha de última actualización.
+        statusId:
+          type: string
+          format: objectId
+          description: ID del estado de la compra.
+        isActive:
+          type: boolean
+          description: Indica si la compra está activa.
 
     PurchaseUpdateModel:
       type: object
       properties:
         id:
           type: string
+          format: objectId
+          description: ID de la compra a actualizar.
         collectionFrequency:
-          type: string
+          type: object
+          properties:
+            amount:
+              type: string
+              description: Monto de la frecuencia de cobro.
+            frequency:
+              type: string
+              description: Frecuencia de cobro (diario, semanal, mensual).
         notes:
           type: array
           items:
             type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+                description: Fecha de la nota.
+              user:
+                type: string
+                format: objectId
+                description: ID del usuario que agregó la nota.
+              note:
+                type: string
+                description: Contenido de la nota.
         payments:
           type: array
           items:
             type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+                description: Fecha del pago.
+              amount:
+                type: number
+                description: Monto del pago.
+              receiptId:
+                type: string
+                description: ID del recibo de pago.
+              userId:
+                type: string
+                format: objectId
+                description: ID del usuario que registró el pago.

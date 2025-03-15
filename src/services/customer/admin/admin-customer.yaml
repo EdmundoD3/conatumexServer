@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: Conatumex API
+  description: API para gestionar clientes en el sistema Conatumex.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+paths:
+  /customer:
+    get:
+      summary: Obtener todos los clientes
+      description: Retorna una lista de todos los clientes registrados.
+      tags:
+        - Clientes
+      responses:
+        '200':
+          description: Lista de clientes obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '500':
+          description: Error interno del servidor.
+
+    post:
+      summary: Crear un nuevo cliente
+      description: Registra un nuevo cliente en la base de datos.
+      tags:
+        - Clientes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: Cliente creado exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Datos de entrada inválidos.
+
+  /customer/{id}:
+    get:
+      summary: Obtener un cliente por ID
+      description: Devuelve la información de un cliente específico.
+      tags:
+        - Clientes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del cliente a buscar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cliente encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Cliente no encontrado.
+
+    put:
+      summary: Actualizar un cliente
+      description: Modifica la información de un cliente existente.
+      tags:
+        - Clientes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del cliente a actualizar.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Cliente actualizado correctamente.
+        '400':
+          description: Datos de entrada inválidos.
+        '404':
+          description: Cliente no encontrado.
+
+    delete:
+      summary: Eliminar un cliente
+      description: Borra un cliente de la base de datos.
+      tags:
+        - Clientes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del cliente a eliminar.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cliente eliminado correctamente.
+        '404':
+          description: Cliente no encontrado.
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "60d21b96ee1456d1f8f31e36"
+        name:
+          type: string
+          example: "Juan Pérez"
+        email:
+          type: string
+          format: email
+          example: "juanperez@example.com"
+        phone:
+          type: string
+          example: "+52 555 123 4567"
+        address:
+          type: string
+          example: "Calle Falsa 123, CDMX"

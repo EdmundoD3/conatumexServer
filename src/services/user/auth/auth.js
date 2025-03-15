@@ -100,6 +100,7 @@ authTokenRouter.post(
         key,
       });
       const {name, username} = req.user
+
       return res.success({
         data: {
           token,
